@@ -38,9 +38,10 @@ class UserController extends Controller
         ]);
 
         if (!Auth::attempt($validated)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'error' => true,
+                'message' => 'Email o contraseña incorrectos',
+            ], 422);
         }
 
         $user = Auth::user();
