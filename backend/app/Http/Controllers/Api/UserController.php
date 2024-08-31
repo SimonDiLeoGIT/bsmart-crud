@@ -5,32 +5,42 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facade\Hash;
-use Illuminate\Support\Facade\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-
     public function register(Request $request)
     {
-        $user = new User();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
         $accessToken = $user->createToken('Personal Access Token')->plainTextToken;
 
-        // Auth::login($user);
-
-        return response()->json(['user' => $user, 'token' => $accessToken], 200);
+        return response()->json(['user' => $user, 'token' => $accessToken], 201);
     }
     
     public function login(Request $request)
     {
-        if(!Auth::attempt($request->only('email', 'password'))){
-            return response()->json(['message' => 'Email or Password Invalid'], 404);
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if (!Auth::attempt($validated)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
 
         $user = Auth::user();
@@ -41,36 +51,8 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        $request->user()->currentAccessToken()->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return response()->json(['message' => 'Logged out successfully'], 204);
-    }
-
-    public function index()
-    {
-    
-    }
-
-
-    public function store(Request $request)
-    {
-    
-    }
-
-    public function show(string $id)
-    {
-        
-    }
-
-    public function update(Request $request, string $id)
-    {
-        
-    }
-
-    public function destroy(string $id)
-    {
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 }
