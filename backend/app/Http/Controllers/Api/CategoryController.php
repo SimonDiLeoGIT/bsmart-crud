@@ -17,10 +17,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-        ]);
+        $validated = $this->validateRequest($request);
     
         $category = Category::create($validated);
     
@@ -41,10 +38,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-        ]);
+        $validated = $this->validateRequest($request);
     
         $category = Category::find($id);
     
@@ -69,5 +63,13 @@ class CategoryController extends Controller
         $category->delete();
 
         return response()->json(['message' => 'Category deleted successfully'], 200);
+    }
+
+    private function validateRequest(Request $request)
+    {
+        return $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
     }
 }
