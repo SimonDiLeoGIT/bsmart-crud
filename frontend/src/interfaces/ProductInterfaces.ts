@@ -1,3 +1,5 @@
+import { CategoryInterface } from "./Category";
+
 export interface Product {
   id: number;
   name: string;
@@ -7,9 +9,18 @@ export interface Product {
   category_id: number;
 }
 
+export interface ProductCategory {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  category: CategoryInterface;
+}
+
 export interface ProductListResponseInterface {
   current_page: number;
-  data: Product[];
+  data: ProductCategory[];
   first_page_url: string;
   from: number;
   last_page: number;

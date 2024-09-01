@@ -5,6 +5,7 @@ const Home = lazy(() => import("../pages/Home"))
 const Register = lazy(() => import("../pages/Register"))
 const Login = lazy(() => import("../pages/Login"))
 const Detalle = lazy(() => import("../pages/Detalle"))
+const NuevoProducto = lazy(() => import("../pages/NuevoProducto"))
 
 const Router = () => {
   return (
@@ -15,6 +16,7 @@ const Router = () => {
           <Route path="/register" element={<Register />} /> 
           <Route path="/login" element={<Login />} />
           <Route path="/detalle/:id" element={<Detalle />} />
+          <Route path="/producto/crear" element={<NuevoProducto />} />
         </Routes>
       </BrowserRouter>
     </Suspense>

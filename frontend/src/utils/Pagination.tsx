@@ -34,10 +34,10 @@ const Pagination: React.FC<props> = ({params, getProducts}) => {
         <img src={left_arrow} className="w-4 " alt="Prev Page"/>
       }
       renderOnZeroPageCount={null}
-      containerClassName="flex justify-center hover:cursor-pointer m-auto"
-      pageLinkClassName="p-1 md:p-2"
-      pageClassName="p-1 rounded-lg font-semibold hover:opacity-60 border mx-1"
-      activeClassName="bg-blue-700"
+      containerClassName="flex justify-center hover:cursor-pointer m-auto text-slate-700"
+      pageLinkClassName="p-2"
+      pageClassName="p-1 rounded-lg font-semibold hover:opacity-60 border mx-1 border-2 hover:bg-blue-700 hover:text-slate-100"
+      activeClassName="bg-blue-700 text-slate-100"
       previousClassName="h-8 w-4 md:w-8 flex items-center justify-center bg-blue-700 rounded-lg m-auto mr-1 hover:opacity-60"
       nextClassName="h-8 w-4 md:w-8 flex items-center justify-center bg-blue-700 rounded-lg m-auto ml-1 hover:opacity-60"
     />

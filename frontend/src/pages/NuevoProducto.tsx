@@ -1,35 +1,23 @@
-import { useEffect, useState } from "react"
-import { Product } from "../interfaces/ProductInterfaces"
-import { Link, useParams } from "react-router-dom"
-import ProductService from "../services/product.service"
+import { Link } from "react-router-dom"
 import ProductForm from "../components/ProductForm"
+import { useState } from "react"
+import { Product } from "../interfaces/ProductInterfaces"
+import ProductService from "../services/product.service"
 import Message from "../components/Message"
 
-const Detalle = () => {
+const NuevoProducto = () => {
 
-  const {id} = useParams()
   const [product, setProduct] = useState<Product>()
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (id) {
-      const getProduct = async () => {
-        const response = await ProductService.getProduct(id)
-        setProduct(response)
-      }
-      
-      getProduct()
-    }
-  }, [id])
-
   const handleSubmit = async () => {
     if (product) {
       try {
-        const response = await ProductService.updateProduct(product)
+        const response = await ProductService.createProduct(product)
         if (response) {
           setProduct(response)
-          setMessage("Producto actualizado con exito")
+          setMessage("Producto creado con exito")
           setVisible(true)
           setTimeout(() => {
             setVisible(false)
@@ -42,11 +30,11 @@ const Detalle = () => {
   }
 
   return (
-    <main className="h-screen w-screen bg-slate-100 text-slate-900 p-10">
+    <main className="h-screen w-screen bg-gray-950 text-white p-10">
       <Message visible={visible} message={message} />
       <section className="w-8/12 m-auto">
         <header className="flex">
-          <h1 className="font-bold m-auto ml-0 text-xl">Detalles del Producto</h1>
+          <h1 className="font-bold m-auto ml-0">Agregar Producto</h1>
           <Link to='/' className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">Volver</Link>
         </header>
         <ProductForm product={product} setProduct={setProduct} handleSubmit={handleSubmit}/>
@@ -55,4 +43,4 @@ const Detalle = () => {
   )
 }
 
-export default Detalle
+export default NuevoProducto

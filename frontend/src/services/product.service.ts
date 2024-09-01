@@ -16,6 +16,11 @@ class ProductService {
     const response = await ApiService.put('/product'+`/${product.id}`, product);
     return response;
   }
+
+  static async createProduct(product: Product): Promise<Product> {
+    const response = await ApiService.post('/product', product);
+    return response;
+  }
 }
 
 export default ProductService
