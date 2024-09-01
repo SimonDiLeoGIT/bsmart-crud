@@ -7,8 +7,13 @@ class ProductService {
     return response;
   }
 
-  static async getProduct(id: string = '1'): Promise<Product> {
+  static async getProduct(id: string): Promise<Product> {
     const response = await ApiService.get('/product'+`/${id}`);
+    return response;
+  }
+  
+  static async updateProduct(product: Product): Promise<Product> {
+    const response = await ApiService.put('/product'+`/${product.id}`, product);
     return response;
   }
 }

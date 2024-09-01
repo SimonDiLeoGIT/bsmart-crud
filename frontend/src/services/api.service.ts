@@ -27,6 +27,21 @@ class ApiService {
     });
   }
 
+  static async put<T>(endpoint: string, body: T, options = {}) {
+    return this.request(endpoint, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      },
+      body: JSON.stringify(body),
+      ...options,
+    });
+  }
+
+  // static async 
+
   static async request(endpoint: string, options: RequestInit) {
     const url = `${this.baseURL}${endpoint}`;
     try {

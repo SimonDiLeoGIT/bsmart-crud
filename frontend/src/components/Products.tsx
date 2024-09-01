@@ -44,9 +44,9 @@ const Products = () => {
           <p>Stock</p>
           <p>Precio</p>
         </li>
-        {products?.map((product) => (
+        {products?.map((product, index) => (
           <Link to={`/detalle/${product.id}`} key={product.id} className="hover:opacity-90">
-            <li key={product.id} className="grid grid-cols-5 border-b border-white p-2 bg-gray-600">
+            <li key={product.id} className={`grid grid-cols-5 border-b border-white p-2  ${index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}`}>
               <p>{product.id}</p>
               <p>{product.name}</p>
               <p>{product.category_id}</p>
