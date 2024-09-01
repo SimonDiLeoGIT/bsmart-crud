@@ -1,0 +1,17 @@
+.dialog.visible {
+  scale: 1;
+  translate: 0 0;
+  transition: scale .5s ease-in-out, translate .3s ease-in-out;
+
+  @starting-style {
+    scale: 0;
+    opacity: 0;
+    translate: 0 -100px;
+  }
+}
+
+
+.dialog {
+  transition: scale .3s ease, display .3s ease allow-discrete;
+  scale:0;
+}
