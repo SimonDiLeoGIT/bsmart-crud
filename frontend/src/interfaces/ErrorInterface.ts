@@ -1,5 +1,5 @@
 export interface ErrorInterface {
-  messages: string
+  message?: string
   error?: string
   code?: number
 }

@@ -13,6 +13,12 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
+        $existingUser = User::first();
+
+        if ($existingUser) {
+            return response()->json(['error' => 'Ya existe un usuario registrado.'], 403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',

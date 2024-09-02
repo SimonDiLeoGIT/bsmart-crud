@@ -4,22 +4,22 @@ import ApiService from "./api.service";
 class CategoryService {
   static async getCategories(): Promise<CategoryInterface[]> {
     const response = await ApiService.makeRequest('/categories');
-    return response;
+    return await response;
   }
 
   static async createCategory(category: CategoryInterface): Promise<CategoryInterface> {
     const response = await ApiService.makeRequest('/category', 'POST', category);
-    return response;
+    return await response;
   }
 
   static async deleteCategory(category_id: number) {
     const response = await ApiService.makeRequest('/category'+`/${category_id}`, 'DELETE');
-    return response;
+    return await response;
   }
 
   static async updateCategory(category: CategoryInterface) {
     const response = await ApiService.makeRequest('/category'+`/${category.id}`, 'PUT', category);
-    return response;
+    return await response;
   }
 }
 
