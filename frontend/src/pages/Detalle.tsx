@@ -45,13 +45,20 @@ const Detalle = () => {
     }
   }
 
-  const handleDelete = () => {
-    setMessage("Producto eliminado con exito.")
-    setVisible(true)
-    setTimeout(() => {
-      setVisible(false)
-      window.location.href = "/"
-    }, 1000)
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await ProductService.deleteProduct(id)
+      if (response) {
+        setMessage("Producto eliminado con exito.")
+        setVisible(true)
+        setTimeout(() => {
+          setVisible(false)
+          window.location.href = "/";
+        }, 1000)
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const handleCancel = () => {
@@ -78,7 +85,7 @@ const Detalle = () => {
               {
                 !editing &&
                 <>
-                  <DeleteModal product_id={product.id} product_name={product.name} handleDelete={handleDelete} text="Eliminar Producto"/>
+                  <DeleteModal id={product.id} name={product.name} handleDelete={handleDelete} text="Eliminar Producto" message="¿Deseas eliminar este producto?"/>
                   <button
                     onClick={() => setEditing(true)}
                     className="bg-blue-700 p-2 rounded-md border font-semibold hover:opacity-70 text-slate-100"

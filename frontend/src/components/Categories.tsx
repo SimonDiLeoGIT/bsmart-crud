@@ -3,6 +3,7 @@ import { CategoryInterface } from "../interfaces/Category"
 import CategoryService from "../services/category.service";
 import CategoryForm from "./CategoryForm";
 import Message from "./Message";
+import DeleteModal from "./DeleteModal";
 
 
 const Categories = () => {
@@ -39,6 +40,22 @@ const Categories = () => {
     }, 3000)
   }
 
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await CategoryService.deleteCategory(id)
+      if (response) {
+        setMessage("Categoría eliminada con exito.")
+        setVisible(true)
+        setTimeout(() => {
+          setVisible(false)
+        }, 3000)
+        getCategories()
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <button 
@@ -50,7 +67,7 @@ const Categories = () => {
 
       <aside className={`${showModal ? 'visible' : 'hidden'}  fixed top-0 left-0 right-0 bottom-0 bg-slate-500 bg-opacity-40 z-20`}>
         <Message visible={visible} message={message} />
-        <section className='bg-slate-100 fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10/12 p-4 rounded-lg shadow-md text-start overflow-y-auto'>
+        <section className='bg-slate-100 fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-8/12 p-8 rounded-lg shadow-md text-start overflow-y-auto'>
           <header className="flex gap-2">
             <h1 className='font-bold'>Categorías</h1>
             <div className="m-auto mr-0">
@@ -93,10 +110,14 @@ const Categories = () => {
               </li>  
             }
             {categories?.map((category) => (
-              <li key={category.id} className="grid grid-cols-5 border-b-2 border-slate-700 p-2">
+              category.id &&
+              <li key={category.id} className="grid grid-cols-5 border-b-2 border-slate-700 p-2 relative">
                 <p>{category.id}</p>
                 <p className="col-span-2">{category.name}</p>
                 <p className="col-span-2">{category.description}</p>
+                <div className="absolute right-4 top-2">
+                  <DeleteModal id={category.id} name={category.name} handleDelete={handleDelete} message="¿Deseas eliminar esta Categoría?"/>
+                </div>                
               </li>
             ))}
             </div>

@@ -11,6 +11,11 @@ class CategoryService {
     const response = await ApiService.makeRequest('/category', 'POST', category);
     return response;
   }
+
+  static async deleteCategory(category_id: number) {
+    const response = await ApiService.makeRequest('/category'+`/${category_id}`, 'DELETE');
+    return response;
+  }
 }
 
 export default CategoryService

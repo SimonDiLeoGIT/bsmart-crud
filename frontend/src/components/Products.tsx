@@ -42,13 +42,20 @@ const Products = () => {
     setLoading(false);
   }
 
-  const handleDelete = () => {
-    setMessage("Producto eliminado con exito.")
-    setVisible(true)
-    setTimeout(() => {
-      setVisible(false)
-    }, 3000)
-    getProducts(paginationData?.current_page)
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await ProductService.deleteProduct(id)
+      if (response) {
+        setMessage("Producto eliminado con exito.")
+        setVisible(true)
+        setTimeout(() => {
+          setVisible(false)
+        }, 3000)
+        getProducts(paginationData?.current_page)
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -86,7 +93,7 @@ const Products = () => {
                 </article>
               </Link>
               <div className="absolute right-4 top-2">
-                <DeleteModal product_id={product.id} product_name={product.name} handleDelete={handleDelete}/>
+                <DeleteModal id={product.id} name={product.name} handleDelete={handleDelete} message="¿Deseas eliminar este producto?"/>
               </div>
             </li>
         ))
