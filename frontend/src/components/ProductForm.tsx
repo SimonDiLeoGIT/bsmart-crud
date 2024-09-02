@@ -14,9 +14,11 @@ interface Props {
 const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit, editing = true, handleCancel }) => {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getCategories = async () => {
+      setLoading(true);
       const response = await CategoryService.getCategories();
       if (response) {
         setCategories(response);
@@ -24,7 +26,8 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
     };
 
     getCategories();
-  }, []);
+    setLoading(false)
+  }, [loading]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -51,11 +54,15 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
   const _handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!product) return;
-    if(product?.price >= 0) {
-      handleSubmit();
-      setError(null);
-    } else {
-      setError('El precio debe ser mayor a 0.');
+    if(product?.price < 0) {
+      setError('El precio debe ser mayor a $0.');
+    } else { 
+      if (product?.price > 9999999999) {
+        setError('El precio debe ser menor a $9999999999.');
+      } else {
+        handleSubmit();
+        setError(null);
+      }
     }
   }
 

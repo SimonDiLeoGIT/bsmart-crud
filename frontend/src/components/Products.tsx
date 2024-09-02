@@ -14,12 +14,14 @@ const Products = () => {
   const [paginationData, setPaginationData] = useState<PaginationInterface>()
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   
   useEffect(() => {
     getProducts(1)
-  }, [])
+  },[])
   
   const getProducts = async (page: number = 1) => {
+    setLoading(true)
     const response = await ProductService.getProducts(page)
     setProducts(response.data)
     setPaginationData(
@@ -37,26 +39,34 @@ const Products = () => {
         total: response.total
       }
     )
+    setLoading(false);
   }
 
-  const handleDelete = () => {
-    setMessage("Producto eliminado con exito.")
-    setVisible(true)
-    setTimeout(() => {
-      setVisible(false)
-    }, 3000)
-    getProducts(paginationData?.current_page)
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await ProductService.deleteProduct(id)
+      if (response) {
+        setMessage("Producto eliminado con exito.")
+        setVisible(true)
+        setTimeout(() => {
+          setVisible(false)
+        }, 3000)
+        getProducts(paginationData?.current_page)
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
     <>
       <Message message={message} visible={visible} />
-      {
-        !products &&
-        <div className="fixed top-1/3 w-screen left-0 flex justify-center items-center">
-          <Loading />
-        </div>
-      } 
+        {
+          loading &&
+          <div className="fixed top-1/3 w-screen left-0 flex justify-center items-center">
+            <Loading />
+          </div>
+        }
       <ul className="mt-4 shadow-lg shadow-slate-400">
         <li className="grid grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
           <p>Id</p>
@@ -66,6 +76,11 @@ const Products = () => {
           <p>Precio</p>
         </li>
         {
+          (!products && !loading) ?
+            <li className="grid h-96 place-content-center">
+              <p className="m-auto">No hay productos</p>
+            </li>
+          :
           products?.map((product, index) => (
             <li key={product.id} className="relative">
               <Link to={`/detalle/${product.id}`} className="hover:opacity-70">
@@ -78,18 +93,21 @@ const Products = () => {
                 </article>
               </Link>
               <div className="absolute right-4 top-2">
-                <DeleteModal product_id={product.id} product_name={product.name} handleDelete={handleDelete}/>
+                <DeleteModal id={product.id} name={product.name} handleDelete={handleDelete} message="¿Deseas eliminar este producto?"/>
               </div>
             </li>
         ))
       }
       </ul>
-      <footer className="mt-4">
-        {
-          paginationData &&
-          <Pagination params={paginationData} getProducts={getProducts}/>
-        }
-      </footer>
+      {
+        products && 
+        <footer className="mt-4">
+          {
+            paginationData &&
+            <Pagination params={paginationData} getProducts={getProducts}/>
+          }
+        </footer>
+      }
       </>
   )
 }

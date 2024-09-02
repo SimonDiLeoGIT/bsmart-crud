@@ -1,4 +1,5 @@
 export interface ErrorInterface {
-  message?: string
-  errors?: unknown
+  messages: string
+  error?: string
+  code?: number
 }
