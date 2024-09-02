@@ -8,7 +8,12 @@ import Loading from "./Loading"
 import DeleteModal from "./DeleteModal"
 import Message from "./Message"
 
-const Products = () => {
+
+interface Props {
+  refreshProducts: boolean
+}
+
+const Products:React.FC<Props> = ({refreshProducts}) => {
 
   const [products , setProducts] = useState<ProductCategory[]>()
   const [paginationData, setPaginationData] = useState<PaginationInterface>()
@@ -18,7 +23,7 @@ const Products = () => {
   
   useEffect(() => {
     getProducts(1)
-  },[])
+  },[refreshProducts])
   
   const getProducts = async (page: number = 1) => {
     setLoading(true)
@@ -68,15 +73,15 @@ const Products = () => {
           </div>
         }
       <ul className="mt-4 shadow-lg shadow-slate-400">
-        <li className="grid grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
+        <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
           <p>Id</p>
           <p>Nombre</p>
-          <p>Categoría</p>
-          <p>Stock</p>
+          <p className="hidden md:block">Categoría</p>
+          <p className="hidden md:block">Stock</p>
           <p>Precio</p>
         </li>
         {
-          (!products && !loading) ?
+          (products?.length === 0 && !loading) ?
             <li className="grid h-96 place-content-center">
               <p className="m-auto">No hay productos</p>
             </li>
@@ -84,11 +89,11 @@ const Products = () => {
           products?.map((product, index) => (
             <li key={product.id} className="relative">
               <Link to={`/detalle/${product.id}`} className="hover:opacity-70">
-                <article className={`grid grid-cols-5 border-b border-slate-500 p-2 ${index % 2 === 0 ? 'bg-slate-100' : 'bg-slate-300'}`}>
+                <article className={`grid grid-cols-3 md:grid-cols-5 border-b border-slate-500 p-2 ${index % 2 === 0 ? 'bg-slate-100' : 'bg-slate-300'}`}>
                   <p>{product.id}</p>
-                  <p>{product.name}</p>
-                  <p>{product.category.name}</p>
-                  <p>{product.stock}</p> 
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis">{product.name}</p>
+                  <p className="hidden md:block">{product.category.name}</p>
+                  <p className="hidden md:block">{product.stock}</p> 
                   <p>${product.price}</p>
                 </article>
               </Link>

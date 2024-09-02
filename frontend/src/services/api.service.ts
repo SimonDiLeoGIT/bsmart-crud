@@ -1,4 +1,4 @@
-import { ErrorInterface } from "../interfaces/ErrorInterface";
+
 
 class ApiService {
   static baseURL = 'http://localhost:8000/api';
@@ -27,11 +27,11 @@ class ApiService {
     const url = `${this.baseURL}${endpoint}`;
     try {
       const response = await fetch(url, options);
+      const responseData = await response.json();
       if (!response.ok) {
-        const errorData: ErrorInterface = await response.json();
-        return errorData;
+        throw new Error(responseData.error || 'An unknown error occurred');
       }
-      return await response.json();
+      return responseData;
     } catch (error) {
       console.error('API Error:', error);
       throw error;

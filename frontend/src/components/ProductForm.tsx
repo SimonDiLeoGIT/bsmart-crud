@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Product } from "../interfaces/ProductInterfaces";
 import CategoryService from "../services/category.service";
 import { CategoryInterface } from "../interfaces/Category";
+import ErrorMessage from "./ErrorMessage";
 
 interface Props {
   product?: Product;
@@ -13,15 +14,20 @@ interface Props {
 
 const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit, editing = true, handleCancel }) => {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [visibleError, setVisibleError] = useState<boolean>(false);
 
   useEffect(() => {
     const getCategories = async () => {
       setLoading(true);
-      const response = await CategoryService.getCategories();
-      if (response) {
-        setCategories(response);
+      try {
+        const response = await CategoryService.getCategories();
+        if (response) {
+          setCategories(response);
+        }
+      } catch (error) {
+        console.error(error);
       }
     };
 
@@ -55,21 +61,28 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
     e.preventDefault();
     if (!product) return;
     if(product?.price < 0) {
-      setError('El precio debe ser mayor a $0.');
+      setErrorMessage("El precio debe ser mayor o igual a $0.")
+        setVisibleError(true)
+        setTimeout(() => {
+          setVisibleError(false)
+        }, 3000)
     } else { 
       if (product?.price > 9999999999) {
-        setError('El precio debe ser menor a $9999999999.');
+        setErrorMessage("El precio debe ser menor a $9999999999.")
+        setVisibleError(true)
+        setTimeout(() => {
+          setVisibleError(false)
+        }, 3000)
       } else {
         handleSubmit();
-        setError(null);
       }
     }
   }
 
   return (
     <>
+      <ErrorMessage message={errorMessage} visible={visibleError} />
       <form onSubmit={_handleSubmit} className="m-auto">
-        <span className={`${error ? "block" : "hidden"} text-red-500 font-semibold`}>{error}</span>
         <fieldset disabled={!editing} className={`grid grid-cols-4 mt-10 gap-4  ${!editing && "opacity-80"}`}>
           <label className="font-semibold m-auto ml-0" htmlFor="name">Nombre</label>
           <input

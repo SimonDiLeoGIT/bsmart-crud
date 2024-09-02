@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import trash from '../assets/trash.svg'
-import ProductService from '../services/product.service'
 
 interface Props {
   id: number
@@ -16,15 +15,7 @@ const DeleteModal: React.FC<Props> = ({ id, name, handleDelete, text, message })
 
   const _handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const response = await ProductService.deleteProduct(id)
-      if (response) {
-        setShowModal(false)
-        handleDelete(id)
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    handleDelete(id)
   }
 
   return (
@@ -39,7 +30,7 @@ const DeleteModal: React.FC<Props> = ({ id, name, handleDelete, text, message })
       </button>
 
       <aside className={`${showModal ? 'visible' : 'hidden'}  fixed top-0 left-0 right-0 bottom-0 bg-slate-500 bg-opacity-40 z-20`}>
-        <section className='bg-slate-100 fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/4 p-4 rounded-lg shadow-md text-start'>
+        <section className='bg-slate-100 fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 p-4 rounded-lg shadow-md text-start'>
           <h1 className='font-bold'>{message}</h1>
           <h2>{name}</h2>
           <p className=''>¡Esto no se puede deshacer!</p>

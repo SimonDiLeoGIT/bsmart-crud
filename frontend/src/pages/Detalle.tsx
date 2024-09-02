@@ -66,9 +66,9 @@ const Detalle = () => {
   };
 
   return (
-    <main className="h-screen w-screen bg-slate-100 text-slate-900 p-10">
+    <main className="h-screen w-screen bg-slate-100 text-slate-900 p-4 md:p-10">
       <Message visible={visible} message={message} />
-      <section className="w-8/12 m-auto">
+      <section className="lg:w-8/12 m-auto">
         <header className="flex">
           <h1 className="font-bold m-auto ml-0 text-xl">Detalles del Producto</h1>
           <Link to='/' className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">Volver</Link>
@@ -81,7 +81,7 @@ const Detalle = () => {
           :
           <div className="text-center">
             <ProductForm product={product} setProduct={setProduct} handleSubmit={handleSubmit} editing={editing} handleCancel={handleCancel}/>
-            <footer className="grid grid-cols-2 gap-4 w-8/12 m-auto">
+            <footer className="grid grid-cols-2 gap-4 lg:w-8/12 m-auto">
               {
                 !editing &&
                 <>
