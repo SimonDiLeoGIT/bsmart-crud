@@ -4,6 +4,8 @@ import { lazy, Suspense } from "react"
 const Home = lazy(() => import("../pages/Home"))
 const Register = lazy(() => import("../pages/Register"))
 const Login = lazy(() => import("../pages/Login"))
+const Detalle = lazy(() => import("../pages/Detalle"))
+const NuevoProducto = lazy(() => import("../pages/NuevoProducto"))
 
 const Router = () => {
   return (
@@ -11,20 +13,10 @@ const Router = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* 
-          <Route path="/men" element={<Men />} />
-          <Route path="/women" element={<Women />} />
-          <Route path="/accessories" element={<Accessories />} />
-          <Route path="/:type/all" element={<NewsProducts />} />
-          <Route path="/accessories/:category" element={<Accessory />} />
-          <Route path="/:sex/:category" element={<Category />} />
-          <Route path="/:type/news/gym-clothes" element={<NewsProducts />} />
-          <Route path="/:type" element={<NewsProducts />} />
-          <Route path="/product/:id/:colorId" element={<Product />} /> */}
           <Route path="/register" element={<Register />} /> 
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/profile" element={<Profile />} />
-          <Route path="/terms&conditions" element={<TerminosCondiciones />} /> */}
+          <Route path="/detalle/:id" element={<Detalle />} />
+          <Route path="/producto/crear" element={<NuevoProducto />} />
         </Routes>
       </BrowserRouter>
     </Suspense>
