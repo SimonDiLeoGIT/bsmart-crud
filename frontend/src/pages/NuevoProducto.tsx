@@ -30,6 +30,10 @@ const NuevoProducto = () => {
     }
   }
 
+  const handleCancel = () => {
+    window.location.href = "/";
+  };
+
   return (
     <main className="h-screen w-screen bg-slate-100 text-slate-900 p-10">
       <Message visible={visible} message={message} />
@@ -38,7 +42,7 @@ const NuevoProducto = () => {
           <h1 className="font-bold m-auto ml-0 text-xl">Agregar Producto</h1>
           <Link to='/' className="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">Volver</Link>
         </header>
-        <ProductForm product={product} setProduct={setProduct} handleSubmit={handleSubmit}/>
+        <ProductForm product={product} setProduct={setProduct} handleSubmit={handleSubmit} handleCancel={handleCancel}/>
       </section>
     </main>
   )

@@ -5,11 +5,15 @@ import Pagination from "../utils/Pagination"
 import { PaginationInterface } from "../interfaces/Pagination"
 import { Link } from "react-router-dom"
 import Loading from "./Loading"
+import DeleteModal from "./DeleteModal"
+import Message from "./Message"
 
 const Products = () => {
 
   const [products , setProducts] = useState<ProductCategory[]>()
   const [paginationData, setPaginationData] = useState<PaginationInterface>()
+  const [message, setMessage] = useState<string>('');
+  const [visible, setVisible] = useState<boolean>(false);
   
   useEffect(() => {
     getProducts(1)
@@ -35,8 +39,18 @@ const Products = () => {
     )
   }
 
+  const handleDelete = () => {
+    setMessage("Producto eliminado con exito.")
+    setVisible(true)
+    setTimeout(() => {
+      setVisible(false)
+    }, 3000)
+    getProducts(paginationData?.current_page)
+  }
+
   return (
     <>
+      <Message message={message} visible={visible} />
       {
         !products &&
         <div className="fixed top-1/3 w-screen left-0 flex justify-center items-center">
@@ -53,15 +67,20 @@ const Products = () => {
         </li>
         {
           products?.map((product, index) => (
-            <Link to={`/detalle/${product.id}`} key={product.id} className="hover:opacity-70">
-            <li key={product.id} className={`grid grid-cols-5 border-b border-slate-500 p-2 ${index % 2 === 0 ? 'bg-slate-100' : 'bg-slate-300'}`}>
-            <p>{product.id}</p>
-            <p>{product.name}</p>
-            <p>{product.category.name}</p>
-            <p>{product.stock}</p> 
-            <p>${product.price}</p>
+            <li key={product.id} className="relative">
+              <Link to={`/detalle/${product.id}`} className="hover:opacity-70">
+                <article className={`grid grid-cols-5 border-b border-slate-500 p-2 ${index % 2 === 0 ? 'bg-slate-100' : 'bg-slate-300'}`}>
+                  <p>{product.id}</p>
+                  <p>{product.name}</p>
+                  <p>{product.category.name}</p>
+                  <p>{product.stock}</p> 
+                  <p>${product.price}</p>
+                </article>
+              </Link>
+              <div className="absolute right-4 top-2">
+                <DeleteModal product_id={product.id} product_name={product.name} handleDelete={handleDelete}/>
+              </div>
             </li>
-            </Link>
         ))
       }
       </ul>

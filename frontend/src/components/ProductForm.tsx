@@ -8,9 +8,10 @@ interface Props {
   setProduct: React.Dispatch<React.SetStateAction<Product | undefined>>;
   handleSubmit: () => void;
   editing?: boolean;
+  handleCancel: () => void;
 }
 
-const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit, editing = true }) => {
+const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit, editing = true, handleCancel }) => {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,10 +46,6 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
         [name]: name === "price" || name === "stock" || name === "category_id" ? parseFloat(value) : value,
       } as Product;
     });
-  };
-
-  const handleCancel = () => {
-    window.location.reload();
   };
 
   const _handleSubmit = (e: React.FormEvent) => {
