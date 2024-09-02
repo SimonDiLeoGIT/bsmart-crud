@@ -14,9 +14,11 @@ interface Props {
 const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit, editing = true, handleCancel }) => {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getCategories = async () => {
+      setLoading(true);
       const response = await CategoryService.getCategories();
       if (response) {
         setCategories(response);
@@ -24,7 +26,8 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
     };
 
     getCategories();
-  }, []);
+    setLoading(false)
+  }, [loading]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
