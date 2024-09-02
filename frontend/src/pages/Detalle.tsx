@@ -5,6 +5,7 @@ import ProductService from "../services/product.service"
 import ProductForm from "../components/ProductForm"
 import Message from "../components/Message"
 import Loading from "../components/Loading"
+import DeleteModal from "../components/DeleteModal"
 
 const Detalle = () => {
 
@@ -44,6 +45,19 @@ const Detalle = () => {
     }
   }
 
+  const handleDelete = () => {
+    setMessage("Producto eliminado con exito.")
+    setVisible(true)
+    setTimeout(() => {
+      setVisible(false)
+      window.location.href = "/"
+    }, 1000)
+  }
+
+  const handleCancel = () => {
+    window.location.reload();
+  };
+
   return (
     <main className="h-screen w-screen bg-slate-100 text-slate-900 p-10">
       <Message visible={visible} message={message} />
@@ -59,16 +73,21 @@ const Detalle = () => {
           </div> 
           :
           <div className="text-center">
-            <ProductForm product={product} setProduct={setProduct} handleSubmit={handleSubmit} editing={editing} />
-            {
-              !editing &&
-              <button
-                onClick={() => setEditing(true)}
-                className="bg-blue-700 p-2 rounded-md border font-semibold hover:opacity-70 text-slate-100 w-6/12"
-              >
-                Editar Producto
-              </button>
-            }
+            <ProductForm product={product} setProduct={setProduct} handleSubmit={handleSubmit} editing={editing} handleCancel={handleCancel}/>
+            <footer className="grid grid-cols-2 gap-4 w-8/12 m-auto">
+              {
+                !editing &&
+                <>
+                  <DeleteModal product_id={product.id} product_name={product.name} handleDelete={handleDelete} text="Eliminar Producto"/>
+                  <button
+                    onClick={() => setEditing(true)}
+                    className="bg-blue-700 p-2 rounded-md border font-semibold hover:opacity-70 text-slate-100"
+                    >
+                    Editar Producto
+                  </button>
+                </>
+              }
+            </footer>
           </div>
         }
       </section>

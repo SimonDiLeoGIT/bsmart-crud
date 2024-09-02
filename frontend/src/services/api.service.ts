@@ -13,6 +13,17 @@ class ApiService {
       ...options,
     });
   }
+
+  static async delete(endpoint: string, options = {}) {
+    return this.request(endpoint, {
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      },
+      method: 'DELETE',
+      ...options,
+    });
+  }
   
   static async post<T>(endpoint: string, body: T, options = {}) {
     return this.request(endpoint, {

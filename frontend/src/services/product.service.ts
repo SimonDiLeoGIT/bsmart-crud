@@ -21,6 +21,11 @@ class ProductService {
     const response = await ApiService.post('/product', product);
     return response;
   }
+
+  static async deleteProduct(product: number) {
+    const response = await ApiService.delete('/product'+`/${product}`);
+    return response;
+  }
 }
 
 export default ProductService
