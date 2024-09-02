@@ -3,55 +3,25 @@ import { ErrorInterface } from "../interfaces/ErrorInterface";
 class ApiService {
   static baseURL = 'http://localhost:8000/api';
 
-  static async get(endpoint: string, options = {}) {
-    return this.request(endpoint, {
+  static async makeRequest<T>(endpoint: string, method = 'GET', body?: T, options: RequestInit = {}) {
+    const config: RequestInit = {
+      method,
       headers: {
-        'Accept': 'application/json', 
+        'Accept': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem('token'),
       },
-      method: 'GET',
       ...options,
-    });
-  }
-
-  static async delete(endpoint: string, options = {}) {
-    return this.request(endpoint, {
-      headers: {
-        'Accept': 'application/json', 
-        'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      },
-      method: 'DELETE',
-      ...options,
-    });
-  }
-  
-  static async post<T>(endpoint: string, body: T, options = {}) {
-    return this.request(endpoint, {
-      method: 'POST',
-      headers: { 
+    };
+    if (body) {
+      config.headers = {
+        ...config.headers,
         'Content-Type': 'application/json',
-        'Accept': 'application/json', 
-        'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      },
-      body: JSON.stringify(body),
-      ...options,
-    });
-  }
+      };
+      config.body = JSON.stringify(body);
+    }
 
-  static async put<T>(endpoint: string, body: T, options = {}) {
-    return this.request(endpoint, {
-      method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json', 
-        'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      },
-      body: JSON.stringify(body),
-      ...options,
-    });
+    return this.request(endpoint, config);
   }
-
-  // static async 
 
   static async request(endpoint: string, options: RequestInit) {
     const url = `${this.baseURL}${endpoint}`;
