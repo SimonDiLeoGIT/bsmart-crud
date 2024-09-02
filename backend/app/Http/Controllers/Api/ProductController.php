@@ -22,11 +22,19 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validateRequest($request);
-    
-        $product = Product::create($validated);
-    
-        return response()->json($product, 201);      
+        try {
+
+            $validated = $this->validateRequest($request);
+            
+            $product = Product::create($validated);
+            
+            return response()->json($product, 201);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => 'Error validating request', 'message' => $e->getMessage(), 'code' => 400], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Internal Server Error', 'message' => $e->getMessage(), 'code' => 500], 500);
+        }
     }
 
 

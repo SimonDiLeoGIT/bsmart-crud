@@ -4,7 +4,7 @@ import CategoryService from "../services/category.service";
 import CategoryForm from "./CategoryForm";
 import Message from "./Message";
 import DeleteModal from "./DeleteModal";
-
+import EditCategory from "./EditCategory";
 
 const Categories = () => {
 
@@ -34,6 +34,15 @@ const Categories = () => {
     setEditing(false)
     getCategories();
     setMessage("Categoría agregada con exito.")
+    setVisible(true)
+    setTimeout(() => {
+      setVisible(false)
+    }, 3000)
+  }
+
+  const handleEdit = () => {
+    getCategories();
+    setMessage("Categoría Editada con exito.")
     setVisible(true)
     setTimeout(() => {
       setVisible(false)
@@ -115,7 +124,8 @@ const Categories = () => {
                 <p>{category.id}</p>
                 <p className="col-span-2">{category.name}</p>
                 <p className="col-span-2">{category.description}</p>
-                <div className="absolute right-4 top-2">
+                <div className="absolute right-4 top-2 flex">
+                  <EditCategory category={category} handleSubmit={handleEdit} />
                   <DeleteModal id={category.id} name={category.name} handleDelete={handleDelete} message="¿Deseas eliminar esta Categoría?"/>
                 </div>                
               </li>

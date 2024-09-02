@@ -16,6 +16,11 @@ class CategoryService {
     const response = await ApiService.makeRequest('/category'+`/${category_id}`, 'DELETE');
     return response;
   }
+
+  static async updateCategory(category: CategoryInterface) {
+    const response = await ApiService.makeRequest('/category'+`/${category.id}`, 'PUT', category);
+    return response;
+  }
 }
 
 export default CategoryService

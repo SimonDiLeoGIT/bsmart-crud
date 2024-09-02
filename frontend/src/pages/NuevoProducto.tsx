@@ -17,7 +17,7 @@ const NuevoProducto = () => {
         const response = await ProductService.createProduct(product)
         if (response) {
           setProduct(response)
-          setMessage("Producto creado con exito")
+          setMessage("Producto creado con exito.")
           setVisible(true)
           setTimeout(() => {
             setVisible(false)
