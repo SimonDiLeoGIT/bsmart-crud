@@ -73,13 +73,13 @@ Accede al directorio frontend:
 cd ../frontend
 ```
 
-Instala las dependencias de Node.js:
+Instala las dependencias del Front End:
 
 ```bash
 npm install
 ```
 
-Inicia el servidor de desarrollo de Node.js:
+Inicia el Front End:
 
 ```bash
 npm run dev
