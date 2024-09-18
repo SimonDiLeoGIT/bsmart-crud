@@ -12,8 +12,8 @@ class ProductService {
     return await response;
   }
   
-  static async updateProduct(product: Product): Promise<Product> {
-    const response = await ApiService.makeRequest('/product'+`/${product.id}`, 'PUT',  product);
+  static async updateProduct(product: Product | undefined): Promise<Product> {
+    const response = await ApiService.makeRequest('/product'+`/${product?.id}`, 'PUT',  product);
     return await response;
   }
 

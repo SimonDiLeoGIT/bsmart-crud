@@ -46,17 +46,21 @@ class ProductController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $validated = $this->validateRequest($request);
-    
-        $product = Product::find($id);
-    
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-    
-        $product->update($validated);
-    
-        return response()->json($product, 200);       
+        try {
+            $validated = $this->validateRequest($request);
+        
+            $product = Product::find($id);
+        
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
+            }
+        
+            $product->update($validated);
+        
+            return response()->json($product, 200);      
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->formatErrorResponse($e);
+        } 
     }
 
 
