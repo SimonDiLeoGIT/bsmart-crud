@@ -3,10 +3,10 @@ import ProductService from "../services/product.service"
 import { ProductCategory } from "../interfaces/ProductInterfaces"
 import Pagination from "../utils/Pagination"
 import { PaginationInterface } from "../interfaces/Pagination"
-import { Link } from "react-router-dom"
 import Loading from "./Loading"
-import DeleteModal from "./DeleteModal"
 import Message from "./Message"
+import ProductItem from "./ProductItem"
+import { SortSelector } from "./SortSelector"
 
 
 interface Props {
@@ -20,10 +20,16 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<keyof ProductCategory>('id');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
   
   useEffect(() => {
     getProducts(1)
   },[refreshProducts])
+
+  useEffect(() => {
+    console.log(sortBy, sortOrder)
+  },[sortBy, sortOrder])
   
   const getProducts = async (page: number = 1) => {
     setLoading(true)
@@ -53,9 +59,6 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       if (response) {
         setMessage("Producto eliminado con exito.")
         setVisible(true)
-        setTimeout(() => {
-          setVisible(false)
-        }, 3000)
         getProducts(paginationData?.current_page)
       }
     } catch (error) {
@@ -63,9 +66,14 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
     }
   }
 
+  const handleSelect = (id: keyof ProductCategory, op: string) => {
+    setSortBy(id)
+    setSortOrder(op)
+  }
+
   return (
     <>
-      <Message message={message} visible={visible} />
+      <Message message={message} visible={visible}  setVisible={setVisible}/>
         {
           loading &&
           <div className="fixed top-1/3 w-screen left-0 flex justify-center items-center">
@@ -74,11 +82,26 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
         }
       <ul className="mt-4 shadow-lg shadow-slate-400">
         <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
-          <p>Id</p>
-          <p>Nombre</p>
-          <p className="hidden md:block">Categoría</p>
-          <p className="hidden md:block">Stock</p>
-          <p>Precio</p>
+          <p className="relative">
+            Id
+            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
+          </p>
+          <p className="relative">
+            Nombre
+            <SortSelector options={['asc', 'desc']} id='name' handleSelect={handleSelect} />
+          </p>
+          <p className="hidden md:block relative">
+            Categoría
+            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
+          </p>
+          <p className="hidden md:block relative">
+            Stock
+            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
+          </p>
+          <p className="relative">
+            Precio
+            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
+          </p>
         </li>
         {
           (products?.length === 0 && !loading) ?
@@ -87,20 +110,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
             </li>
           :
           products?.map((product, index) => (
-            <li key={product.id} className="relative">
-              <Link to={`/detalle/${product.id}`} className="hover:opacity-70">
-                <article className={`grid grid-cols-3 md:grid-cols-5 border-b border-slate-500 p-2 ${index % 2 === 0 ? 'bg-slate-100' : 'bg-slate-300'}`}>
-                  <p>{product.id}</p>
-                  <p className="whitespace-nowrap overflow-hidden text-ellipsis">{product.name}</p>
-                  <p className="hidden md:block">{product.category.name}</p>
-                  <p className="hidden md:block">{product.stock}</p> 
-                  <p>${product.price}</p>
-                </article>
-              </Link>
-              <div className="absolute right-4 top-2">
-                <DeleteModal id={product.id} name={product.name} handleDelete={handleDelete} message="¿Deseas eliminar este producto?"/>
-              </div>
-            </li>
+            <ProductItem product={product} index={index} handleDelete={handleDelete} key={product.id}/>
         ))
       }
       </ul>
