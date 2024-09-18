@@ -17,7 +17,7 @@ class ProductService {
     return await response;
   }
 
-  static async createProduct(product: Product): Promise<Product> {
+  static async createProduct(product: Product | undefined): Promise<Product> {
     const response = await ApiService.makeRequest('/product', 'POST', product);
     return await response;
   }

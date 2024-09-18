@@ -1,3 +1,4 @@
+import { ErrorInterface } from "../interfaces/ErrorInterface";
 
 
 class ApiService {
@@ -29,7 +30,8 @@ class ApiService {
       const response = await fetch(url, options);
       const responseData = await response.json();
       if (!response.ok) {
-        throw new Error(responseData.error || 'An unknown error occurred');
+        const errorData: ErrorInterface = await responseData;
+        throw errorData;
       }
       return responseData;
     } catch (error) {

@@ -22,9 +22,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validateRequest($request);
-        $product = Product::create($validated);
-        return response()->json($product, 201);
+        try {
+            $validated = $this->validateRequest($request);
+            $product = Product::create($validated);
+            return response()->json($product, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->formatErrorResponse($e);
+        }
     }
 
 
@@ -74,9 +78,22 @@ class ProductController extends Controller
         return $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
         ]);
+    }
+
+    private function formatErrorResponse(\Illuminate\Validation\ValidationException $e)
+    {
+        $errors = $e->errors();
+        $firstErrorKey = array_key_first($errors);
+        $firstErrorMessage = $errors[$firstErrorKey][0];
+
+        return response()->json([
+            'error' => 'Validation Error',
+            'message' => $firstErrorMessage,
+            'code' => 400
+        ], 400);
     }
 }
