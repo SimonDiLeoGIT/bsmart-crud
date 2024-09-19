@@ -82,26 +82,11 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
         }
       <ul className="mt-4 shadow-lg shadow-slate-400">
         <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
-          <p className="relative">
-            Id
-            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
-          </p>
-          <p className="relative">
-            Nombre
-            <SortSelector options={['asc', 'desc']} id='name' handleSelect={handleSelect} />
-          </p>
-          <p className="hidden md:block relative">
-            Categoría
-            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
-          </p>
-          <p className="hidden md:block relative">
-            Stock
-            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
-          </p>
-          <p className="relative">
-            Precio
-            <SortSelector options={['asc', 'desc']} id='id' handleSelect={handleSelect} />
-          </p>
+            <SortSelector text="Id" options={['Up', 'Down']} id='id' handleSelect={handleSelect} />
+            <SortSelector text="Nombre" options={['Up', 'Down']} id='name' handleSelect={handleSelect} />
+            <SortSelector text="Categoría" options={['Up', 'Down']} id='category' handleSelect={handleSelect} />
+            <SortSelector text="Stock" options={['Up', 'Down']} id='stock' handleSelect={handleSelect} />
+            <SortSelector text="Precio" options={['Up', 'Down']} id='price' handleSelect={handleSelect} />
         </li>
         {
           (products?.length === 0 && !loading) ?
