@@ -85,8 +85,8 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
             <SortSelector text="Id" options={['Up', 'Down']} id='id' handleSelect={handleSelect} />
             <SortSelector text="Nombre" options={['Up', 'Down']} id='name' handleSelect={handleSelect} />
             <SortSelector text="Categoría" options={['Up', 'Down']} id='category_id' handleSelect={handleSelect} />
-            <SortSelector text="Stock" options={['Up', 'Down']} id='stock' handleSelect={handleSelect} />
-            <SortSelector text="Precio" options={['Up', 'Down']} id='price' handleSelect={handleSelect} />
+            <div className="hidden md:block"><SortSelector text="Stock" options={['Up', 'Down']} id='stock' handleSelect={handleSelect} /></div>
+            <div className="hidden md:block"><SortSelector text="Precio" options={['Up', 'Down']} id='price' handleSelect={handleSelect} /></div>
         </li>
         {
           (products?.length === 0 && !loading) ?
