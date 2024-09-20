@@ -71,6 +71,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
     setSortBy(id)
     setSortOrder(op === 'Up' ? 'asc' : 'desc')
   }
+  
   return (
     <>
       <Message message={message} visible={visible}  setVisible={setVisible}/>
