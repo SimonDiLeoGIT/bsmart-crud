@@ -22,6 +22,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<keyof Product>('id');
   const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [selectedSort, setSelectedSort] = useState<keyof Product | null>(null)
   
   useEffect(() => {
     getProducts(1)
@@ -70,25 +71,28 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
     setSortBy(id)
     setSortOrder(op === 'Up' ? 'asc' : 'desc')
   }
-
   return (
     <>
       <Message message={message} visible={visible}  setVisible={setVisible}/>
+      <ul className={`mt-4 shadow-lg shadow-slate-400 min-h-96 ${ loading && 'opacity-80' } relative`}>
+        <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
+            <SortSelector text="Id" options={['Up', 'Down']} id='id' handleSelect={handleSelect} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
+            <SortSelector text="Nombre" options={['Up', 'Down']} id='name' handleSelect={handleSelect} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
+            <SortSelector text="Categoría" options={['Up', 'Down']} id='category_id' handleSelect={handleSelect} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
+            <div className="hidden md:block"><SortSelector text="Stock" options={['Up', 'Down']} id='stock' handleSelect={handleSelect} selectedSort={selectedSort} setSelectedSort={setSelectedSort} /></div>
+            <div className="hidden md:block"><SortSelector text="Precio" options={['Up', 'Down']} id='price' handleSelect={handleSelect} selectedSort={selectedSort} setSelectedSort={setSelectedSort} /></div>
+        </li>
         {
           loading &&
-          <div className="fixed top-1/3 w-screen left-0 flex justify-center items-center">
+          <div 
+            role="alert"
+            aria-live="assertive"
+            className="absolute top-0 w-full h-full left-0 flex justify-center items-center z-50"
+          >
             <Loading />
           </div>
         }
-      <ul className="mt-4 shadow-lg shadow-slate-400">
-        <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
-            <SortSelector text="Id" options={['Up', 'Down']} id='id' handleSelect={handleSelect} />
-            <SortSelector text="Nombre" options={['Up', 'Down']} id='name' handleSelect={handleSelect} />
-            <SortSelector text="Categoría" options={['Up', 'Down']} id='category_id' handleSelect={handleSelect} />
-            <div className="hidden md:block"><SortSelector text="Stock" options={['Up', 'Down']} id='stock' handleSelect={handleSelect} /></div>
-            <div className="hidden md:block"><SortSelector text="Precio" options={['Up', 'Down']} id='price' handleSelect={handleSelect} /></div>
-        </li>
-        {
+        { 
           (products?.length === 0 && !loading) ?
             <li className="grid h-96 place-content-center">
               <p className="m-auto">No hay productos</p>

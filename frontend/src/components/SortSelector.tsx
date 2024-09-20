@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import down_arrow from '../assets/down-arrow.svg'
 
 interface Props<T> {
@@ -6,28 +6,29 @@ interface Props<T> {
   id: T
   text: string
   handleSelect: (id: T, op: string) => void
+  selectedSort: T | null
+  setSelectedSort: (id: T | null) => void
 }
 
-export const SortSelector = <T extends string | number>({ options, id, text, handleSelect }: Props<T>) => {
+export const SortSelector = <T extends string | number>({ options, id, text, handleSelect, selectedSort, setSelectedSort }: Props<T>) => {
 
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
-  function handleMenuOpen() {
-    setIsOpen(!isOpen)
-  }
+  useEffect(() => {
+    setIsOpen(selectedSort === id)
+  },[selectedSort, id])
 
   function handleClik(id: T, op: string) {
     handleSelect(id, op)
-    handleMenuOpen()
+    setSelectedSort(null)
   }
-
 
   return (
     <article className="relative">
       <button
         className="mx-2 flex w-full"
-        onClick={() => handleMenuOpen()}
+        onClick={() => setSelectedSort(id !== selectedSort ? id : null)}
       >
         <p className="font-semibold ">{text}</p>
         <p className="flex-1"><img src={down_arrow} className="w-6 m-auto mr-4" /></p>
