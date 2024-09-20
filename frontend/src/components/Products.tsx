@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import ProductService from "../services/product.service"
-import { ProductCategory } from "../interfaces/ProductInterfaces"
+import { Product, ProductCategory } from "../interfaces/ProductInterfaces"
 import Pagination from "../utils/Pagination"
 import { PaginationInterface } from "../interfaces/Pagination"
 import Loading from "./Loading"
@@ -20,7 +20,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<keyof ProductCategory>('id');
+  const [sortBy, setSortBy] = useState<keyof Product>('id');
   const [sortOrder, setSortOrder] = useState<string>('asc');
   
   useEffect(() => {
@@ -28,12 +28,12 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   },[refreshProducts])
 
   useEffect(() => {
-    console.log(sortBy, sortOrder)
+    getProducts(paginationData?.current_page, sortBy, sortOrder)
   },[sortBy, sortOrder])
   
-  const getProducts = async (page: number = 1) => {
+  const getProducts = async (page: number = 1, sortBy: string = 'id', sortOrder: string = 'asc') => {
     setLoading(true)
-    const response = await ProductService.getProducts(page)
+    const response = await ProductService.getProducts(page, sortBy, sortOrder)
     setProducts(response.data)
     setPaginationData(
       {
@@ -66,9 +66,9 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
     }
   }
 
-  const handleSelect = (id: keyof ProductCategory, op: string) => {
+  const handleSelect = (id: keyof Product, op: string) => {
     setSortBy(id)
-    setSortOrder(op)
+    setSortOrder(op === 'Up' ? 'asc' : 'desc')
   }
 
   return (
@@ -84,7 +84,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
         <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
             <SortSelector text="Id" options={['Up', 'Down']} id='id' handleSelect={handleSelect} />
             <SortSelector text="Nombre" options={['Up', 'Down']} id='name' handleSelect={handleSelect} />
-            <SortSelector text="Categoría" options={['Up', 'Down']} id='category' handleSelect={handleSelect} />
+            <SortSelector text="Categoría" options={['Up', 'Down']} id='category_id' handleSelect={handleSelect} />
             <SortSelector text="Stock" options={['Up', 'Down']} id='stock' handleSelect={handleSelect} />
             <SortSelector text="Precio" options={['Up', 'Down']} id='price' handleSelect={handleSelect} />
         </li>

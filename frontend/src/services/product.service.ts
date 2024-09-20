@@ -2,8 +2,8 @@ import { Product, ProductListResponseInterface } from "../interfaces/ProductInte
 import ApiService from "./api.service";
 
 class ProductService {
-  static async getProducts(page: number = 1): Promise<ProductListResponseInterface> {
-    const response = await ApiService.makeRequest('/products'+`?page=${page}`);
+  static async getProducts(page: number = 1, sortBy: string = 'id', sortOrder: string = 'asc'): Promise<ProductListResponseInterface> {
+    const response = await ApiService.makeRequest(`/products/${sortBy}/${sortOrder}?page=${page}`);
     return await response;
   }
 

@@ -16,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(ProductController::class)->group(function () {
-        Route::get('/products', 'index');
+        Route::get('/products/{field_sort?}/{sort_order?}/{per_page?}', 'index');
         Route::post('/product', 'store');
         Route::get('/product/{id}', 'show');
         Route::put('/product/{id}', 'update');
