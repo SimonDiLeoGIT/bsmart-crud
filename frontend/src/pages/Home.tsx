@@ -3,7 +3,8 @@ import UserService from "../services/user.service"
 import Products from "../components/Products"
 import { Link } from "react-router-dom"
 import Categories from "../components/Categories"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import Loading from "../components/Loading"
 
 const Home = () => {
   
@@ -11,16 +12,31 @@ const Home = () => {
   const [categoriesVisible, setCategoriesVisible] = useState(false);
   const [refreshProducts, setRefreshProducts] = useState(false);
 
-  if (!token) {
-    window.location.href = '/login'
-  }
+  const [loading, setLoading] = useState<boolean>(true);
 
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/login'
+    } else {
+      setLoading(false);
+    }
+
+  }, [token])
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    )
+  }
   const logout = () => {
     console.log(localStorage.getItem('token'))
     UserService.logout()
     localStorage.removeItem('token')
     window.location.reload()
   }
+
 
   return (
     <main className="h-screen w-screen bg-slate-100 text-slate-900 md:p-10">      

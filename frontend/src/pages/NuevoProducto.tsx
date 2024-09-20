@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom"
 import ProductForm from "../components/ProductForm"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Product } from "../interfaces/ProductInterfaces"
 import ProductService from "../services/product.service"
 import Message from "../components/Message"
 import ErrorMessage from "../components/ErrorMessage"
 import { ErrorInterface } from "../interfaces/ErrorInterface"
+import { useUser } from "../hook/useUser"
+import Loading from "../components/Loading"
 
 const NuevoProducto = () => {
 
@@ -14,6 +16,27 @@ const NuevoProducto = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [visibleError, setVisibleError] = useState<boolean>(false);
+
+  const { token } = useUser()
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/login'
+    } else {
+      setLoading(false);
+    }
+
+  }, [token])
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    )
+  }
 
   const handleSubmit = async () => {
     try {

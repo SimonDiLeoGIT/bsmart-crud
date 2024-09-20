@@ -8,6 +8,7 @@ import Loading from "../components/Loading"
 import DeleteModal from "../components/DeleteModal"
 import ErrorMessage from "../components/ErrorMessage"
 import { ErrorInterface } from "../interfaces/ErrorInterface"
+import { useUser } from "../hook/useUser"
 
 const Detalle = () => {
 
@@ -19,6 +20,19 @@ const Detalle = () => {
   const [visibleError, setVisibleError] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
 
+  const { token } = useUser()
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/login'
+    } else {
+      setLoading(false);
+    }
+
+  }, [token])
+
   useEffect(() => {
     if (id) {
       const getProduct = async () => {
@@ -29,6 +43,14 @@ const Detalle = () => {
       getProduct()
     }
   }, [id])
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    )
+  }
 
   const handleSubmit = async () => {
     try {
