@@ -2,15 +2,14 @@ import ReactPaginate from "react-paginate";
 import left_arrow from '../assets/left-arrow.svg'
 import right_arrow from '../assets/right-arrow.svg'
 import { PaginationInterface } from "../interfaces/Pagination";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface props {
   params: PaginationInterface
-  getProducts: (page: number) => void
   getProductsWithUrl: (url: string) => void
 }
 
-const Pagination: React.FC<props> = ({params, getProducts, getProductsWithUrl}) => {
+const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
 
   const [selectedPage, setSelectedPage] = useState<number>(params.current_page - 1);
 
@@ -21,12 +20,8 @@ const Pagination: React.FC<props> = ({params, getProducts, getProductsWithUrl}) 
   const handlePageClick = (event: PageChangeEvent) => {
     const page = (event.selected) + 1
     setSelectedPage(event.selected)
-    getProducts(page)
+    getProductsWithUrl(params.path + '?page=' + page)
   }
-
-  useEffect(() => {
-    console.log(params)
-  }, [params])
 
 
   return (

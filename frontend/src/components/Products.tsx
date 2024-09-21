@@ -70,7 +70,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       if (response) {
         setMessage("Producto eliminado con exito.")
         setVisible(true)
-        getProducts(paginationData?.current_page)
+        getProductsWithUrl(paginationData?.path + '?page=' + paginationData?.current_page)
       }
     } catch (error) {
       console.error(error);
@@ -116,7 +116,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       </ul>
       {
         products && paginationData &&
-          <Pagination params={paginationData} getProducts={getProducts} getProductsWithUrl={getProductsWithUrl}/>
+          <Pagination params={paginationData} getProductsWithUrl={getProductsWithUrl}/>
       }
       </>
   )
