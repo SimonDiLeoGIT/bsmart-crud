@@ -106,7 +106,7 @@ const Login = () => {
         type="submit"
         className="w-7/12 m-auto p-2 bg-blue-700 text-white font-semibold rounded-lg hover:opacity-90 hover:scale-105 transition-transform duration-150"
       >
-        Login
+        Register
       </button>
     </form>
   </section>
