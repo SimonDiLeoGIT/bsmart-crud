@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { lazy, Suspense } from "react"
 import Loading from "../components/Loading"
+import Navbar from "../components/Navbar"
 
 const Home = lazy(() => import("../pages/Home"))
 const Register = lazy(() => import("../pages/Register"))
@@ -18,6 +19,9 @@ const Router = () => {
         </div>
       }>
       <BrowserRouter>
+        <header className="w-screen max-w-full bg-slate-100 shadow-md shadow-slate-400 relative">
+          <Navbar />
+        </header>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} /> 

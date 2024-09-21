@@ -1,5 +1,4 @@
 import { useUser } from "../hook/useUser"
-import UserService from "../services/user.service"
 import Products from "../components/Products"
 import { Link } from "react-router-dom"
 import Categories from "../components/Categories"
@@ -36,12 +35,6 @@ const Home = () => {
       </div>
     )
   }
-  const logout = () => {
-    console.log(localStorage.getItem('token'))
-    UserService.logout()
-    localStorage.removeItem('token')
-    window.location.reload()
-  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
@@ -54,8 +47,7 @@ const Home = () => {
 
 
   return (
-    <main className="h-screen w-screen bg-slate-100 text-slate-900 md:p-10">      
-      <button className="bg-red-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" onClick={logout}>Logout</button>
+    <main className="h-screen w-screen max-w-full bg-slate-100 text-slate-900 py-10">
       <section className="lg:w-8/12 m-auto">
         <header className="flex justify-between">
           <h1 className="font-bold m-auto ml-0 text-xl">Productos<span className="text-slate-500"> ({products?.total})</span></h1>
