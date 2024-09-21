@@ -58,9 +58,9 @@ const Home = () => {
       <button className="bg-red-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" onClick={logout}>Logout</button>
       <section className="lg:w-8/12 m-auto">
         <header className="flex justify-between">
-          <h1 className="font-bold m-auto ml-0 text-xl">Productos</h1>
+          <h1 className="font-bold m-auto ml-0 text-xl">Productos<span className="text-slate-500"> ({products?.total})</span></h1>
           <div className="flex gap-2">
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-2">
               <fieldset>
                 <button type="button" onClick={() => setProductsPerPage(productsPerPage-1)} className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" >-</button>
                   <input type="number" className="p-2 w-12 border-b-2 text-center border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" value={productsPerPage} min={0} max={products?.total} onChange={handleInputChange} />
