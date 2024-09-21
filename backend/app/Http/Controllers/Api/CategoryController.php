@@ -16,6 +16,13 @@ class CategoryController extends Controller
         return response()->json($categories, 200);
     }
 
+    public function getCategoryProducts()
+    {
+        $categories = Category::with('products')->get();
+        
+        return response()->json($categories, 200);
+    }
+
     public function store(Request $request)
     {
         $validated = $this->validateRequest($request);
