@@ -3,14 +3,27 @@ import { useEffect, useState } from "react";
 import CategoryService from "../services/category.service";
 import { CategoryProductsInterface } from "../interfaces/Category";
 import CategoryDashboard from "../components/CategoryDashboard";
+import { useUser } from "../hook/useUser";
+import Loading from "../components/Loading";
 
 const Dashboard = () => {
 
+  const { token } = useUser()
+  const [loading, setLoading] = useState<boolean>(true);
   const [categories, setCategories] = useState<CategoryProductsInterface[]>([]);
 
   useEffect(() => {
     getCategories();  
   }, [])
+
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/login'
+    } else {
+      setLoading(false);
+    }
+
+  }, [token])
 
   const getCategories = async () => {
     const response = await CategoryService.getCategoryProducs();
@@ -19,6 +32,14 @@ const Dashboard = () => {
       console.log(response)
     }
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    )
+  }
 
   return (
     <main className="h-screen w-screen max-w-full bg-slate-100 text-slate-900 md:p-10">
