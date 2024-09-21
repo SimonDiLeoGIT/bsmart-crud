@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import ProductService from "../services/product.service"
-import { Product, ProductCategory } from "../interfaces/ProductInterfaces"
+import { Product, ProductCategory, ProductListResponseInterface } from "../interfaces/ProductInterfaces"
 import Pagination from "../utils/Pagination"
 import { PaginationInterface } from "../interfaces/Pagination"
 import Loading from "./Loading"
@@ -29,29 +29,39 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   },[refreshProducts])
 
   useEffect(() => {
-    getProducts(paginationData?.current_page, sortBy, sortOrder)
+    getProducts(paginationData?.current_page)
   },[sortBy, sortOrder])
   
-  const getProducts = async (page: number = 1, sortBy: string = 'id', sortOrder: string = 'asc') => {
+  const getProducts = async (page: number = 1) => {
     setLoading(true)
     const response = await ProductService.getProducts(page, sortBy, sortOrder)
-    setProducts(response.data)
+    setData(response)
+    setLoading(false);
+  }
+
+  const getProductsWithUrl = async (url: string) => {
+    const response = await ProductService.getProductsWihUrl(url)
+    setData(response)
+    setLoading(false);
+  }
+
+  const setData = (data: ProductListResponseInterface) => {
+    setProducts(data.data)
     setPaginationData(
       {
-        current_page: response.current_page,
-        first_page_url: response.first_page_url,
-        from: response.from,
-        last_page: response.last_page,
-        last_page_url: response.last_page_url,
-        next_page_url: response.next_page_url,
-        path: response.path,
-        per_page: response.per_page,
-        prev_page_url: response.prev_page_url,
-        to: response.to,
-        total: response.total
+        current_page: data.current_page,
+        first_page_url: data.first_page_url,
+        from: data.from,
+        last_page: data.last_page,
+        last_page_url: data.last_page_url,
+        next_page_url: data.next_page_url,
+        path: data.path,
+        per_page: data.per_page,
+        prev_page_url: data.prev_page_url,
+        to: data.to,
+        total: data.total
       }
     )
-    setLoading(false);
   }
 
   const handleDelete = async (id: number) => {
@@ -105,13 +115,8 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       }
       </ul>
       {
-        products && 
-        <footer className="mt-4">
-          {
-            paginationData &&
-            <Pagination params={paginationData} getProducts={getProducts}/>
-          }
-        </footer>
+        products && paginationData &&
+          <Pagination params={paginationData} getProducts={getProducts} getProductsWithUrl={getProductsWithUrl}/>
       }
       </>
   )

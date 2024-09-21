@@ -2,7 +2,7 @@ import { useUser } from "../hook/useUser"
 import UserService from "../services/user.service"
 import Products from "../components/Products"
 import { Link } from "react-router-dom"
-import Categories from "../components/CategoriesB"
+import Categories from "../components/Categories"
 import { useEffect, useState } from "react"
 import Loading from "../components/Loading"
 
