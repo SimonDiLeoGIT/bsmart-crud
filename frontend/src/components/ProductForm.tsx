@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Product } from "../interfaces/ProductInterfaces";
 import CategoryService from "../services/category.service";
 import { CategoryInterface } from "../interfaces/Category";
-import ErrorMessage from "./ErrorMessage";
 
 interface Props {
   product?: Product;
@@ -15,8 +14,6 @@ interface Props {
 const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit, editing = true, handleCancel }) => {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [visibleError, setVisibleError] = useState<boolean>(false);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -44,50 +41,33 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
         return {
           name: name === "name" ? value : "",
           description: name === "description" ? value : "",
-          price: name === "price" ? parseFloat(value) : 0,
-          stock: name === "stock" ? parseInt(value) : 0,
+          price: name === "price" ? parseFloat(value) || 0 : 0,
+          stock: name === "stock" ? parseInt(value) || 0 : 0,
           category_id: name === "category_id" ? parseInt(value) : 0,
         } as Product;
       }
 
       return {
         ...prevProduct,
-        [name]: name === "price" || name === "stock" || name === "category_id" ? parseFloat(value) : value,
+        [name]: name === "price" || name === "stock" || name === "category_id" 
+                ? (value === "" ? "" : parseFloat(value) || 0) 
+                : value,
       } as Product;
     });
   };
 
   const _handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!product) return;
-    if(product?.price < 0) {
-      setErrorMessage("El precio debe ser mayor o igual a $0.")
-        setVisibleError(true)
-        setTimeout(() => {
-          setVisibleError(false)
-        }, 3000)
-    } else { 
-      if (product?.price > 9999999999) {
-        setErrorMessage("El precio debe ser menor a $9999999999.")
-        setVisibleError(true)
-        setTimeout(() => {
-          setVisibleError(false)
-        }, 3000)
-      } else {
-        handleSubmit();
-      }
-    }
+    handleSubmit();
   }
 
   return (
     <>
-      <ErrorMessage message={errorMessage} visible={visibleError} />
       <form onSubmit={_handleSubmit} className="m-auto">
         <fieldset disabled={!editing} className={`grid grid-cols-4 mt-10 gap-4  ${!editing && "opacity-80"}`}>
           <label className="font-semibold m-auto ml-0" htmlFor="name">Nombre</label>
           <input
             className={`p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300 col-span-3`}
-            required
             type="text"
             id="name"
             name="name"
@@ -98,7 +78,6 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
           <label className="font-semibold m-auto ml-0" htmlFor="description">Descripción</label>
           <input
             className={`p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300 col-span-3`}
-            required
             type="text"
             id="description"
             name="description"
@@ -108,7 +87,6 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
           <label className="font-semibold m-auto ml-0" htmlFor="price">Precio</label>
           <input
             className={`p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300 col-span-3`}
-            required
             type="number"
             id="price"
             name="price"
@@ -133,11 +111,9 @@ const ProductForm: React.FC<Props> = ({ product = null, setProduct, handleSubmit
           <label className="font-semibold m-auto ml-0" htmlFor="stock">Stock</label>
           <input
             className={`p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300 col-span-3`}
-            required
             type="number"
             id="stock"
             name="stock"
-            min={0}
             value={product?.stock || ""}
             onChange={handleChange}
             />

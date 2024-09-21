@@ -2,8 +2,8 @@ import { CategoryInterface } from "../interfaces/Category";
 import ApiService from "./api.service";
 
 class CategoryService {
-  static async getCategories(): Promise<CategoryInterface[]> {
-    const response = await ApiService.makeRequest('/categories');
+  static async getCategories(sortBy: string = 'id', sortOrder: string = 'asc'): Promise<CategoryInterface[]> {
+    const response = await ApiService.makeRequest(`/categories/${sortBy}/${sortOrder}`);
     return await response;
   }
 

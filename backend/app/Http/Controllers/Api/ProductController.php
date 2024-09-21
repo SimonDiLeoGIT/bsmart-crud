@@ -9,12 +9,11 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(Request $request, string $fieldSort = 'id', string $sortOrder = 'asc')
     {
         $perPage = $request->get('per_page', 15);
-    
         
-        $products = Product::with('category')->paginate($perPage);
+        $products = Product::with('category')->orderBy($fieldSort, $sortOrder)->paginate($perPage);
     
         return response()->json($products, 200);
     }
@@ -22,9 +21,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validateRequest($request);
-        $product = Product::create($validated);
-        return response()->json($product, 201);
+        try {
+            $validated = $this->validateRequest($request);
+            $product = Product::create($validated);
+            return response()->json($product, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->formatErrorResponse($e);
+        }
     }
 
 
@@ -42,17 +45,21 @@ class ProductController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $validated = $this->validateRequest($request);
-    
-        $product = Product::find($id);
-    
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-    
-        $product->update($validated);
-    
-        return response()->json($product, 200);       
+        try {
+            $validated = $this->validateRequest($request);
+        
+            $product = Product::find($id);
+        
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
+            }
+        
+            $product->update($validated);
+        
+            return response()->json($product, 200);      
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->formatErrorResponse($e);
+        } 
     }
 
 
@@ -74,9 +81,22 @@ class ProductController extends Controller
         return $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
         ]);
+    }
+
+    private function formatErrorResponse(\Illuminate\Validation\ValidationException $e)
+    {
+        $errors = $e->errors();
+        $firstErrorKey = array_key_first($errors);
+        $firstErrorMessage = $errors[$firstErrorKey][0];
+
+        return response()->json([
+            'error' => 'Validation Error',
+            'message' => $firstErrorMessage,
+            'code' => 400
+        ], 400);
     }
 }

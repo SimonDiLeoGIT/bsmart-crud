@@ -34,16 +34,13 @@ const Login = () => {
     } catch (error) {
       setErrorMessage("Usuario no autorizado.")
         setVisibleError(true)
-        setTimeout(() => {
-          setVisibleError(false)
-        }, 3000)
       console.log(error);
     }
   }
 
   return (
     <section className="fixed top-0 left-0 w-screen h-screen -bg--color-white z-50 flex overflow-hidden bg-slate-100 text-slate-900">
-    <ErrorMessage visible={visibleError} message={errorMessage} />
+    <ErrorMessage visible={visibleError} message={errorMessage} setVisible={setVisibleError}/>
     <form 
       onSubmit={login}
       method="POST"

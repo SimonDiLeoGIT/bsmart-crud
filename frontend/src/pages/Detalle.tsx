@@ -6,6 +6,9 @@ import ProductForm from "../components/ProductForm"
 import Message from "../components/Message"
 import Loading from "../components/Loading"
 import DeleteModal from "../components/DeleteModal"
+import ErrorMessage from "../components/ErrorMessage"
+import { ErrorInterface } from "../interfaces/ErrorInterface"
+import { useUser } from "../hook/useUser"
 
 const Detalle = () => {
 
@@ -13,7 +16,22 @@ const Detalle = () => {
   const [product, setProduct] = useState<Product>()
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [visibleError, setVisibleError] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
+
+  const { token } = useUser()
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/login'
+    } else {
+      setLoading(false);
+    }
+
+  }, [token])
 
   useEffect(() => {
     if (id) {
@@ -26,22 +44,28 @@ const Detalle = () => {
     }
   }, [id])
 
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    )
+  }
+
   const handleSubmit = async () => {
-    if (product) {
-      try {
-        const response = await ProductService.updateProduct(product)
-        if (response) {
-          setProduct(response)
-          setMessage("Producto actualizado con exito")
-          setVisible(true)
-          setTimeout(() => {
-            setVisible(false)
-          }, 3000)
-          setEditing(false)
-        }
-      } catch (error) {
-        console.error(error);
+    try {
+      const response = await ProductService.updateProduct(product)
+      if (response) {
+        setProduct(response)
+        setMessage("Producto actualizado con exito")
+        setVisible(true)
+        setEditing(false)
       }
+    } catch (error) {
+      const apiError = error as ErrorInterface;
+      setErrorMessage(apiError.message)
+      setVisibleError(true)
+      console.error(error);
     }
   }
 
@@ -52,7 +76,6 @@ const Detalle = () => {
         setMessage("Producto eliminado con exito.")
         setVisible(true)
         setTimeout(() => {
-          setVisible(false)
           window.location.href = "/";
         }, 1000)
       }
@@ -67,7 +90,8 @@ const Detalle = () => {
 
   return (
     <main className="h-screen w-screen bg-slate-100 text-slate-900 p-4 md:p-10">
-      <Message visible={visible} message={message} />
+      <Message visible={visible} message={message} setVisible={setVisible}/>
+      <ErrorMessage visible={visibleError} message={errorMessage} setVisible={setVisibleError}/>
       <section className="lg:w-8/12 m-auto">
         <header className="flex">
           <h1 className="font-bold m-auto ml-0 text-xl">Detalles del Producto</h1>

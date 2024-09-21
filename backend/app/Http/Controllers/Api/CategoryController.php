@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
 
-    public function index()
+    public function index(string $fieldSort = 'id', string $sortOrder = 'asc')
     {
-        $categories = Category::all();
+        $categories = Category::orderBy($fieldSort, $sortOrder)->get();
+        
         return response()->json($categories, 200);
     }
 
