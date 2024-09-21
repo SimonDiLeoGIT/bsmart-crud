@@ -6,13 +6,13 @@ import Router from "./utils/Router"
 
 function App() {
   return (
-    <LoadingProvider>
-      <UserProvider>
+    <UserProvider>
+      <LoadingProvider>
         <ProductProvider>
           <Router />
         </ProductProvider>
-      </UserProvider>
-    </LoadingProvider>
+      </LoadingProvider>
+    </UserProvider>
   )
 }
 

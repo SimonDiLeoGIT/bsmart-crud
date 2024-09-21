@@ -3,8 +3,8 @@ import { Product, ProductListResponseInterface } from "../interfaces/ProductInte
 import ApiService from "./api.service";
 
 class ProductService {
-  static async getProducts(page: number = 1, sortBy: string = 'id', sortOrder: string = 'asc'): Promise<ProductListResponseInterface> {
-    const response = await ApiService.makeRequest(`/products/${sortBy}/${sortOrder}?page=${page}`);
+  static async getProducts(page: number = 1, sortBy: string = 'id', sortOrder: string = 'asc', perPage: number = 15): Promise<ProductListResponseInterface> {
+    const response = await ApiService.makeRequest(`/products/${sortBy}/${sortOrder}?page=${page}&per_page=${perPage}`);
     return await response;
   }
 

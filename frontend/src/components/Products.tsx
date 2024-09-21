@@ -18,20 +18,14 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
 
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<keyof Product>('id');
-  const [sortOrder, setSortOrder] = useState<string>('asc');
   const [selectedSort, setSelectedSort] = useState<keyof Product | null>(null)
 
-  const { getProducts, getProductsWithUrl, products} = useProducts()
+  const { getProducts, getProductsWithUrl, products, setSortBy, setSortOrder} = useProducts()
   const { loading } = useLoading()
   
   useEffect(() => {
-    getProducts(1, sortBy, sortOrder)
+    getProducts(1)
   },[refreshProducts]) // eslint-disable-line
-
-  useEffect(() => {
-    if(products) getProducts(products?.current_page, sortBy, sortOrder)
-  },[sortBy, sortOrder]) // eslint-disable-line
 
   const handleDelete = async (id: number) => {
     try {
@@ -39,7 +33,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       if (response) {
         setMessage("Producto eliminado con exito.")
         setVisible(true)
-        getProductsWithUrl(products?.path + '?page=' + products?.current_page)
+        getProductsWithUrl(`${products?.path}?page=${products?.current_page}&per_page=${products?.per_page}`);
       }
     } catch (error) {
       console.error(error);

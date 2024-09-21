@@ -20,20 +20,20 @@ const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
   const handlePageClick = (event: PageChangeEvent) => {
     const page = (event.selected) + 1
     setSelectedPage(event.selected)
-    getProductsWithUrl(params.path + '?page=' + page)
+    getProductsWithUrl(`${params?.path}?page=${page}&per_page=${params?.per_page}`);
   }
 
 
   return (
     <footer className="mt-4 flex justify-center">
-      <button onClick={() => {getProductsWithUrl(params.first_page_url); setSelectedPage(0)}} className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">First Page</button>
+      <button onClick={() => {getProductsWithUrl(`${params.first_page_url}&per_page=${params?.per_page}`);setSelectedPage(0)}} className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">First Page</button>
       <ReactPaginate
         breakLabel="..."
         nextLabel={
           <img src={right_arrow} className="w-4" alt="Next Page"/>
         }
         onPageChange={handlePageClick}
-        pageRangeDisplayed={1}
+        pageRangeDisplayed={2}
         pageCount={params.last_page}
         marginPagesDisplayed={2}
         previousLabel={
@@ -48,7 +48,7 @@ const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
         renderOnZeroPageCount={null}
         forcePage={selectedPage}
       />
-      <button onClick={() => {getProductsWithUrl(params.last_page_url); setSelectedPage(params.last_page - 1)}}  className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">Last Page</button>
+      <button onClick={() => {getProductsWithUrl(`${params.last_page_url}&per_page=${params?.per_page}`); setSelectedPage(params.last_page - 1)}}  className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">Last Page</button>
     </footer>
   )
 }

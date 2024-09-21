@@ -5,6 +5,9 @@ import { Link } from "react-router-dom"
 import Categories from "../components/Categories"
 import { useEffect, useState } from "react"
 import Loading from "../components/Loading"
+import { useProducts } from "../hook/useProducts"
+
+import '../../public/styles/home.css'
 
 const Home = () => {
   
@@ -14,6 +17,8 @@ const Home = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { productsPerPage, setProductsPerPage, products } = useProducts()
+
   useEffect(() => {
     if (!token) {
       window.location.href = '/login'
@@ -22,6 +27,7 @@ const Home = () => {
     }
 
   }, [token])
+
 
   if (loading) {
     return (
@@ -37,6 +43,15 @@ const Home = () => {
     window.location.reload()
   }
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let newValue = e.target.value;
+    if (newValue.startsWith('0') && newValue.length > 1) {
+      newValue = newValue.replace(/^0+/, '');
+    }
+    setProductsPerPage(Number(newValue));
+  };
+
+
 
   return (
     <main className="h-screen w-screen bg-slate-100 text-slate-900 md:p-10">      
@@ -45,6 +60,13 @@ const Home = () => {
         <header className="flex justify-between">
           <h1 className="font-bold m-auto ml-0 text-xl">Productos</h1>
           <div className="flex gap-2">
+            <form onSubmit={(e) => e.preventDefault()}>
+              <fieldset>
+                <button type="button" onClick={() => setProductsPerPage(productsPerPage-1)} className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" >-</button>
+                  <input type="number" className="p-2 w-12 border-b-2 text-center border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" value={productsPerPage} min={0} max={products?.total} onChange={handleInputChange} />
+                <button type="button" onClick={() => setProductsPerPage(productsPerPage+1)} className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" >+</button>
+              </fieldset>
+            </form>
             <Categories 
               visibleModal={categoriesVisible} 
               onClose={() => {
