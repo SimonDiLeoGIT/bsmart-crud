@@ -2,7 +2,7 @@ import { useUser } from "../hook/useUser"
 import UserService from "../services/user.service"
 import Products from "../components/Products"
 import { Link } from "react-router-dom"
-import Categories from "../components/Categories"
+import Categories from "../components/CategoriesB"
 import { useEffect, useState } from "react"
 import Loading from "../components/Loading"
 
@@ -49,7 +49,7 @@ const Home = () => {
               visibleModal={categoriesVisible} 
               onClose={() => {
                 setCategoriesVisible(false);
-                setRefreshProducts(prev => !prev); // Toggle to refresh products
+                setRefreshProducts(prev => !prev);
               }}
             />
             <Link to="/producto/crear" className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70">Agregar Producto</Link>

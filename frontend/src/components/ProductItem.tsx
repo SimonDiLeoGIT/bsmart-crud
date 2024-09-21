@@ -20,7 +20,7 @@ const ProductItem: React.FC<Props> = ({product, index, handleDelete}) => {
           <p>${product.price}</p>
         </article>
       </Link>
-      <div className="absolute right-4 top-2">
+      <div className="absolute right-0 top-0">
         <DeleteModal id={product.id} name={product.name} handleDelete={handleDelete} message="¿Deseas eliminar este producto?"/>
       </div>
     </li>

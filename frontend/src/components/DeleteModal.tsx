@@ -20,13 +20,12 @@ const DeleteModal: React.FC<Props> = ({ id, name, handleDelete, text, message })
 
   return (
     <>
-      <button onClick={() => setShowModal(true)} className={`${text && "bg-red-700 p-2 rounded-md border font-semibold hover:opacity-70 text-slate-100"}`}>
-        {
-          text ? 
-            text 
-          : 
-          <img src={trash} alt='trash' width={20}/>
-        }
+      <button onClick={() => setShowModal(true)} className={`${text ? "bg-red-700 p-2 rounded-md border font-semibold hover:opacity-70 text-slate-100" : "p-1 m-1 w-full" }`}>
+          {
+            text
+              ? text
+              : <img src={trash} alt='trash' width={20}/>
+          }
       </button>
 
       <aside className={`${showModal ? 'visible' : 'hidden'}  fixed top-0 left-0 right-0 bottom-0 bg-slate-500 bg-opacity-40 z-20`}>

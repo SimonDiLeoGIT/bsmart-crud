@@ -76,7 +76,6 @@ const Detalle = () => {
         setMessage("Producto eliminado con exito.")
         setVisible(true)
         setTimeout(() => {
-          setVisible(false)
           window.location.href = "/";
         }, 1000)
       }
