@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import ProductService from "../services/product.service"
-import { Product, ProductCategory, ProductListResponseInterface } from "../interfaces/ProductInterfaces"
+import { Product } from "../interfaces/ProductInterfaces"
 import Pagination from "../utils/Pagination"
-import { PaginationInterface } from "../interfaces/Pagination"
 import Loading from "./Loading"
 import Message from "./Message"
 import ProductItem from "./ProductItem"
 import { SortSelector } from "./SortSelector"
+import { useProducts } from "../hook/useProducts"
+import { useLoading } from "../hook/useLoading"
 
 
 interface Props {
@@ -15,54 +16,22 @@ interface Props {
 
 const Products:React.FC<Props> = ({refreshProducts}) => {
 
-  const [products , setProducts] = useState<ProductCategory[]>()
-  const [paginationData, setPaginationData] = useState<PaginationInterface>()
   const [message, setMessage] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<keyof Product>('id');
   const [sortOrder, setSortOrder] = useState<string>('asc');
   const [selectedSort, setSelectedSort] = useState<keyof Product | null>(null)
+
+  const { getProducts, getProductsWithUrl, products} = useProducts()
+  const { loading } = useLoading()
   
   useEffect(() => {
-    getProducts(1)
-  },[refreshProducts])
+    getProducts(1, sortBy, sortOrder)
+  },[refreshProducts]) // eslint-disable-line
 
   useEffect(() => {
-    getProducts(paginationData?.current_page)
-  },[sortBy, sortOrder])
-  
-  const getProducts = async (page: number = 1) => {
-    setLoading(true)
-    const response = await ProductService.getProducts(page, sortBy, sortOrder)
-    setData(response)
-    setLoading(false);
-  }
-
-  const getProductsWithUrl = async (url: string) => {
-    const response = await ProductService.getProductsWihUrl(url)
-    setData(response)
-    setLoading(false);
-  }
-
-  const setData = (data: ProductListResponseInterface) => {
-    setProducts(data.data)
-    setPaginationData(
-      {
-        current_page: data.current_page,
-        first_page_url: data.first_page_url,
-        from: data.from,
-        last_page: data.last_page,
-        last_page_url: data.last_page_url,
-        next_page_url: data.next_page_url,
-        path: data.path,
-        per_page: data.per_page,
-        prev_page_url: data.prev_page_url,
-        to: data.to,
-        total: data.total
-      }
-    )
-  }
+    if(products) getProducts(products?.current_page, sortBy, sortOrder)
+  },[sortBy, sortOrder]) // eslint-disable-line
 
   const handleDelete = async (id: number) => {
     try {
@@ -70,7 +39,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       if (response) {
         setMessage("Producto eliminado con exito.")
         setVisible(true)
-        getProductsWithUrl(paginationData?.path + '?page=' + paginationData?.current_page)
+        getProductsWithUrl(products?.path + '?page=' + products?.current_page)
       }
     } catch (error) {
       console.error(error);
@@ -104,19 +73,19 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
           </div>
         }
         { 
-          (products?.length === 0 && !loading) ?
+          (products?.data.length === 0 && !loading) ?
             <li className="grid h-96 place-content-center">
               <p className="m-auto">No hay productos</p>
             </li>
           :
-          products?.map((product, index) => (
+          products?.data.map((product, index) => (
             <ProductItem product={product} index={index} handleDelete={handleDelete} key={product.id}/>
         ))
       }
       </ul>
       {
-        products && paginationData &&
-          <Pagination params={paginationData} getProductsWithUrl={getProductsWithUrl}/>
+        products &&
+          <Pagination params={products} getProductsWithUrl={getProductsWithUrl}/>
       }
       </>
   )

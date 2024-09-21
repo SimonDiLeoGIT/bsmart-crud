@@ -33,10 +33,6 @@ const Categories: React.FC<Props> = ({visibleModal, onClose}) => {
   const [visibleErrorMessage, setVisibleErrorMessage] = useState<boolean>(false);
 
   useEffect(() => {
-    getCategories();
-  },[]);
-
-  useEffect(() => {
     getCategories(sortBy, sortOrder)
   },[sortBy, sortOrder])
 
@@ -66,6 +62,7 @@ const Categories: React.FC<Props> = ({visibleModal, onClose}) => {
       setMessage('Categoría Actualizada con éxito');
       setVisibleMessage(true);
       setEditingCategory(null);
+      await getCategories(sortBy, sortOrder)
     } catch (error) {
       const errorResponse: ErrorInterface = error as ErrorInterface;
       setErrorMessage(errorResponse.message || "An error occurred");
