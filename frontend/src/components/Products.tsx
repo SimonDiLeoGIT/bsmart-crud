@@ -20,7 +20,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [selectedSort, setSelectedSort] = useState<keyof Product | null>(null)
 
-  const { getProducts, getProductsWithUrl, products, setSortBy, setSortOrder} = useProducts()
+  const { getProducts, getProductsWithUrl, products, setSortBy, setSortOrder, setProductsPerPage, productsPerPage, setName} = useProducts()
   const { loading } = useLoading()
   
   useEffect(() => {
@@ -44,10 +44,31 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
     setSortBy(id)
     setSortOrder(op === 'Up' ? 'asc' : 'desc')
   }
+
+  const handleItemsCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let newValue = e.target.value;
+    if (newValue.startsWith('0') && newValue.length > 1) {
+      newValue = newValue.replace(/^0+/, '');
+    }
+    setProductsPerPage(Number(newValue));
+  };
   
   return (
-    <>
+    <section>
       <Message message={message} visible={visible}  setVisible={setVisible}/>
+      <header className="flex justify-between items-center">
+        <h1 className="text-xl font-bold">Productos<span className="text-slate-500"> ({products?.total})</span></h1>
+        <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-2">
+          <fieldset className="flex items-center">
+            <button type="button" onClick={() => setProductsPerPage(productsPerPage-1)} className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" >-</button>
+              <input type="number" className="p-2 w-12 border-b-4 text-center border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" value={productsPerPage} min={0} max={products?.total} onChange={handleItemsCountChange} />
+            <button type="button" onClick={() => setProductsPerPage(productsPerPage+1)} className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" >+</button>
+          </fieldset>
+          <fieldset>
+            <input type="text" placeholder="Buscar..." className="p-2 border-b-4 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" onChange={(e) => setName(e.target.value)} />
+          </fieldset>
+        </form>
+      </header>
       <ul className={`mt-4 shadow-lg shadow-slate-400 min-h-96 ${ loading && 'opacity-80' } relative`}>
         <li className="grid grid-cols-3 md:grid-cols-5 border-b-2 border-slate-700 p-2 font-semibold">
             <SortSelector text="Id" options={['Up', 'Down']} id='id' handleSelect={handleSelect} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
@@ -79,9 +100,9 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
       </ul>
       {
         products &&
-          <Pagination params={products} getProductsWithUrl={getProductsWithUrl}/>
+          <Pagination />
       }
-      </>
+      </section>
   )
 }
 

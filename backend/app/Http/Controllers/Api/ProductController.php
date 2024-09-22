@@ -12,13 +12,18 @@ class ProductController extends Controller
     public function index(Request $request, string $fieldSort = 'id', string $sortOrder = 'asc')
     {
         $perPage = $request->get('per_page', 15);
-        
-        $products = Product::with('category')->orderBy($fieldSort, $sortOrder)->paginate($perPage);
+        $name = $request->get('name', '');
+    
+        $products = Product::with('category')
+            ->when($name, function ($query, $name) {
+                return $query->where('name', 'like', '%' . $name . '%');
+            })
+            ->orderBy($fieldSort, $sortOrder)
+            ->paginate($perPage);
     
         return response()->json($products, 200);
     }
-
-
+    
     public function store(Request $request)
     {
         try {

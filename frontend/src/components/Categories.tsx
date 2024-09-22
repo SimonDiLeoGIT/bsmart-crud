@@ -136,7 +136,7 @@ const Categories: React.FC<Props> = ({visibleModal, onClose}) => {
             <div className="m-auto mr-0">
               <button 
                 onClick={closeModal} 
-                className="bg-red-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70 md:w-32 mr-4 disabled:opacity-40 disabled:hover:opacity-40"
+                className="bg-red-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70 md:w-32 mr-2 disabled:opacity-40 disabled:hover:opacity-40"
                 disabled={adding || editingCategory!==null}
               >
                 Cerrar

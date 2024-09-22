@@ -17,6 +17,7 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
+    setLoading(true);
     if (!token) {
       window.location.href = '/login'
     } else {
@@ -26,16 +27,17 @@ const Dashboard = () => {
   }, [token])
 
   const getCategories = async () => {
+    setLoading(true);
     const response = await CategoryService.getCategoryProducs();
     if (response) {
       setCategories(response);
-      console.log(response)
     }
+    setLoading(false);
   };
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex justify-center items-center">
+      <div className="h-screen w-screen flex justify-center items-center fixed top-0 left-0 bg-slate-100">
         <Loading />
       </div>
     )

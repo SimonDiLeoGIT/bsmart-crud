@@ -18,6 +18,8 @@ type ProductContext = {
   setSortBy: (id: keyof Product) => void
   sortOrder: string
   setSortOrder: (id: string) => void
+  name: string
+  setName: (name: string) => void
 }
 
 export const ProductContext = createContext({} as ProductContext)
@@ -27,16 +29,16 @@ const ProductProvider = ({ children }: Props) => {
   const [productsPerPage, _setProductsPerPage] = useState<number>(15)
   const [sortBy, _setSortBy] = useState<keyof Product>('id');
   const [sortOrder, _setSortOrder] = useState<string>('asc');
+  const [name, _setName] = useState<string>('')
   const { setLoading } = useLoading()
 
   useEffect(() => {
     if (products) {
-      getProductsWithUrl(`${products.first_page_url}&per_page=${productsPerPage}`);
+      getProductsWithUrl(`${products.first_page_url}&per_page=${productsPerPage}${name !== '' ? `&name=${name}` : ''}`);
     }
-  }, [productsPerPage]); // eslint-disable-line
+  }, [productsPerPage, name]); // eslint-disable-line
 
   useEffect(() => {
-    console.log('aaa')
     if(products) getProducts(products?.current_page)
   },[sortBy, sortOrder]) // eslint-disable-line
   
@@ -61,8 +63,7 @@ const ProductProvider = ({ children }: Props) => {
 
   const getProducts = async (page: number = 1) => {
     setLoading(true)
-    console.log(page, sortBy, sortOrder, productsPerPage)
-    const response = await ProductService.getProducts(page, sortBy, sortOrder, productsPerPage)
+    const response = await ProductService.getProducts(page, sortBy, sortOrder, productsPerPage, name)
     setData(response)
     setLoading(false)
   }
@@ -86,6 +87,9 @@ const ProductProvider = ({ children }: Props) => {
     _setSortOrder(op)
   }
 
+  const setName = (n: string) => {
+    _setName(n)
+  }
 
   return (
     <ProductContext.Provider value={{
@@ -97,7 +101,9 @@ const ProductProvider = ({ children }: Props) => {
       sortBy,
       setSortBy,
       sortOrder,
-      setSortOrder
+      setSortOrder,
+      name,
+      setName
     }}
     >
       {children}

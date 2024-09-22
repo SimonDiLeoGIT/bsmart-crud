@@ -15,7 +15,6 @@ const Category: React.FC<Props> = ({ category, handleSubmit, handleCancel, editi
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(name, value)
     setEditingCategory((prevCategory) => ({
       ...prevCategory,
       [name]: value,
@@ -25,7 +24,7 @@ const Category: React.FC<Props> = ({ category, handleSubmit, handleCancel, editi
   return (
     <form onSubmit={handleSubmit} key={category?.id} className="">
       <fieldset className="grid grid-cols-3 gap-2" disabled={!editing}>
-        <p className="p-2">{category?.id}</p>
+        <p className="p-2">{category?.id ? category.id : 'Id'}</p>
         <input className={`w-10/12 p-2 ${editing ? "p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" : "bg-slate-100"}`} value={editing ? editingCategory?.name : category?.name} name='name' onChange={handleInputChange}/>
         <input className={`w-10/12 p-2 ${editing ? "p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" : "bg-slate-100"}`} value={editing ? editingCategory?.description : category?.description} name='description' onChange={handleInputChange}/>
       </fieldset>
