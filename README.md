@@ -66,7 +66,7 @@ Inicia el servidor de desarrollo de Laravel:
 php artisan serve
 ```
 
-3. Configuración del Frontend
+## 3. Configuración del Frontend
 Accede al directorio frontend:
 
 ```bash
@@ -85,7 +85,7 @@ Inicia el Front End:
 npm run dev
 ```
 
-4. Detención de Servicios
+## 4. Detención de Servicios
 Cuando termines de probar el proyecto, asegúrate de detener los contenedores de Docker para liberar recursos:
 
 ```bash
