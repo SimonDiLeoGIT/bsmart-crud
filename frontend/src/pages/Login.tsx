@@ -4,6 +4,7 @@ import { UserLoginInterface } from "../interfaces/UserInterfaces"
 import { Link } from "react-router-dom";
 import { useUser } from "../hook/useUser";
 import ErrorMessage from "../components/ErrorMessage";
+import { ErrorInterface } from "../interfaces/ErrorInterface";
 
 const Login = () => {
 
@@ -32,9 +33,9 @@ const Login = () => {
       setToken(response.token);
       window.location.href = "/";
     } catch (error) {
-      setErrorMessage("Usuario no autorizado.")
-        setVisibleError(true)
-      console.log(error);
+      const apiError = error as ErrorInterface;
+      setErrorMessage(apiError.message)
+      setVisibleError(true)
     }
   }
 
@@ -49,21 +50,14 @@ const Login = () => {
       <legend className="font-semibold m-auto">Login</legend>
       <input 
         name='email' 
-        type="email" 
-        placeholder="Email" 
-        required 
-        minLength={3} 
-        maxLength={30} 
+        type="text" 
+        placeholder="Email"
         className="p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300"
       />
       <input 
         name='password' 
         type="password" 
-        placeholder="Password" 
-        required 
-        minLength={8} 
-        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-        title="Must be at least 8 characters long, including at least one number, one uppercase letter, and one lowercase letter."
+        placeholder="Password"
         className="p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300"
       />
       <p className="text-center text-sm -text--color-black opacity-90 mt-4">You don't have an account? <Link to="/register" className="text-blue-700 border-b border-blue-700 hover:opacity-60">Sign up</Link></p>

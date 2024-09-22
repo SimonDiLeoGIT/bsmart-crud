@@ -4,10 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Utils\ResponseHandler;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
+    protected $responseHandler;
+
+    public function __construct(ResponseHandler $responseHandler)
+    {
+        $this->responseHandler = $responseHandler;
+    }
+
 
     public function index(Request $request, string $fieldSort = 'id', string $sortOrder = 'asc')
     {
@@ -23,7 +32,8 @@ class ProductController extends Controller
     
         return response()->json($products, 200);
     }
-    
+
+
     public function store(Request $request)
     {
         try {
@@ -31,7 +41,7 @@ class ProductController extends Controller
             $product = Product::create($validated);
             return response()->json($product, 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->formatErrorResponse($e);
+            return $this->responseHandler->formatValidationErrorResponse($e);
         }
     }
 
@@ -63,7 +73,7 @@ class ProductController extends Controller
         
             return response()->json($product, 200);      
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->formatErrorResponse($e);
+            return $this->responseHandler->formatValidationErrorResponse($e);
         } 
     }
 
@@ -92,16 +102,4 @@ class ProductController extends Controller
         ]);
     }
 
-    private function formatErrorResponse(\Illuminate\Validation\ValidationException $e)
-    {
-        $errors = $e->errors();
-        $firstErrorKey = array_key_first($errors);
-        $firstErrorMessage = $errors[$firstErrorKey][0];
-
-        return response()->json([
-            'error' => 'Validation Error',
-            'message' => $firstErrorMessage,
-            'code' => 400
-        ], 400);
-    }
 }

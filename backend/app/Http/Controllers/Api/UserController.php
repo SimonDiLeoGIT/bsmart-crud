@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Utils\ResponseHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -11,19 +12,30 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    protected $responseHandler;
+
+    public function __construct(ResponseHandler $responseHandler)
+    {
+        $this->responseHandler = $responseHandler;
+    }
+
     public function register(Request $request)
     {
         $existingUser = User::first();
 
         if ($existingUser) {
-            return response()->json(['error' => 'Ya existe un usuario registrado.'], 403);
+            return $this->responseHandler->formatErrorResponse('Forbiden', 'There is already a registered user.', 403);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        try {   
+            $validated = $request->validate([
+                'name' => 'required|string|max:30|min:3',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+        } catch (ValidationException $e) {
+            return $this->responseHandler->formatValidationErrorResponse($e);
+        }
 
         $user = User::create([
             'name' => $validated['name'],
@@ -38,16 +50,17 @@ class UserController extends Controller
     
     public function login(Request $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
+            ]);
+        } catch (ValidationException $e) {
+            return $this->responseHandler->formatValidationErrorResponse($e);
+        }
 
         if (!Auth::attempt($validated)) {
-            return response()->json([
-                'error' => true,
-                'message' => 'Email o contraseña incorrectos',
-            ], 422);
+            return $this->responseHandler->formatErrorResponse('Unprocessable Entity', 'Email and Password do not match.', 422);
         }
 
         $user = Auth::user();
