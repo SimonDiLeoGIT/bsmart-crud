@@ -23,34 +23,21 @@ const Login = () => {
     const formData = new FormData(event.target as HTMLFormElement);
 
     const data: UserRegisterInterface = {
-      name: formData.get('email') as string,
+      name: formData.get('name') as string,
       email: formData.get('email') as string,
       password: formData.get('password') as string,
       password_confirmation: formData.get('password_confirmation') as string
     };
-
-    if (data.password !== data.password_confirmation) {
-      setErrorMessage("Las contraseñas no coinciden.")
-        setVisibleError(true)
-      return
-    }
 
     try {
       const response = await UserService.register(data);
       setUser(response.user);
       setToken(response.token);
       window.location.href = "/";
-    } catch (error: unknown) {
-      let errorMsg = "No se pudo registrar el usuario.";
-    
-      if (typeof error === 'object' && error !== null && 'code' in error) {
-        const err = error as ErrorInterface;
-        errorMsg = `Error ${err.code}: ${err.message}`;
-      } else if (error instanceof Error) {
-        errorMsg = error.message;
-      }
-      setErrorMessage(errorMsg)
-        setVisibleError(true)
+    } catch (error) {
+      const apiError = error as ErrorInterface;
+      setErrorMessage(apiError.message)
+      setVisibleError(true)
     }
   }
 
@@ -66,39 +53,25 @@ const Login = () => {
       <input 
         name='name' 
         type="text" 
-        placeholder="Name" 
-        required 
-        minLength={3} 
-        maxLength={30} 
+        placeholder="Name"
         className="p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300"
       />
       <input 
         name='email' 
-        type="email" 
-        placeholder="Email" 
-        required 
-        minLength={3} 
-        maxLength={30} 
+        type="text" 
+        placeholder="Email"
         className="p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300"
       />
       <input 
         name='password' 
         type="password" 
-        placeholder="Password" 
-        required 
-        minLength={8} 
-        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-        title="Must be at least 8 characters long, including at least one number, one uppercase letter, and one lowercase letter."
+        placeholder="Password"
         className="p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300"
       />
       <input 
         name='password_confirmation' 
         type="password" 
-        placeholder="Confirm Password" 
-        required 
-        minLength={8} 
-        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-        title="Must be at least 8 characters long, including at least one number, one uppercase letter, and one lowercase letter."
+        placeholder="Confirm Password"
         className="p-2 border-b-2 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300"
       />
       <p className="text-center text-sm -text--color-black opacity-90 mt-4">You already have an account? <Link to="/login" className="text-blue-700 border-b border-blue-700 hover:opacity-60">Login</Link></p>
