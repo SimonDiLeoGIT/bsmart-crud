@@ -46,7 +46,7 @@ const Detalle = () => {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex justify-center items-center">
+      <div className="h-screen w-screen flex justify-center items-center fixed top-0 left-0 bg-slate-100">
         <Loading />
       </div>
     )

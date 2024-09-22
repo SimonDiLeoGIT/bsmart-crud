@@ -1,21 +1,21 @@
 import ReactPaginate from "react-paginate";
 import left_arrow from '../assets/left-arrow.svg'
 import right_arrow from '../assets/right-arrow.svg'
-import { PaginationInterface } from "../interfaces/Pagination";
 import { useEffect, useState } from "react";
+import { useProducts } from "../hook/useProducts";
+import Loading from "../components/Loading";
 
-interface props {
-  params: PaginationInterface
-  getProductsWithUrl: (url: string) => void
-}
 
-const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
+const Pagination = () => {
 
-  const [selectedPage, setSelectedPage] = useState<number>(params.current_page - 1);
+  const { products, name, getProductsWithUrl } = useProducts();
+  
+  const [selectedPage, setSelectedPage] = useState<number>(0);
+
 
   useEffect(() => {
-    setSelectedPage(params.current_page - 1)
-  },[params])
+    if (products) setSelectedPage(products?.current_page - 1)
+  },[products])
 
   interface PageChangeEvent {
     selected: number;
@@ -24,13 +24,20 @@ const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
   const handlePageClick = (event: PageChangeEvent) => {
     const page = (event.selected) + 1
     setSelectedPage(event.selected)
-    getProductsWithUrl(`${params?.path}?page=${page}&per_page=${params?.per_page}`);
+    getProductsWithUrl(`${products?.path}?page=${page}&per_page=${products?.per_page}${name !== '' ? `&name=${name}` : ''}`);
   }
 
+  if (!products) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Loading />
+      </div>
+    )
+  }
 
   return (
     <footer className="mt-4 flex justify-center">
-      <button onClick={() => {getProductsWithUrl(`${params.first_page_url}&per_page=${params?.per_page}`);setSelectedPage(0)}} className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">First Page</button>
+      <button onClick={() => {getProductsWithUrl(`${products?.first_page_url}&per_page=${products?.per_page}${name !== '' ? `&name=${name}` : ''}`);setSelectedPage(0)}} className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">First Page</button>
       <ReactPaginate
         breakLabel="..."
         nextLabel={
@@ -38,7 +45,7 @@ const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
         }
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
-        pageCount={params.last_page}
+        pageCount={products?.last_page}
         marginPagesDisplayed={2}
         previousLabel={
           <img src={left_arrow} className="w-4 " alt="Prev Page"/>
@@ -52,7 +59,7 @@ const Pagination: React.FC<props> = ({params, getProductsWithUrl}) => {
         renderOnZeroPageCount={null}
         forcePage={selectedPage}
       />
-      <button onClick={() => {getProductsWithUrl(`${params.last_page_url}&per_page=${params?.per_page}`); setSelectedPage(params.last_page - 1)}}  className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">Last Page</button>
+      <button onClick={() => {getProductsWithUrl(`${products?.last_page_url}&per_page=${products?.per_page}${name !== '' ? `&name=${name}` : ''}`); setSelectedPage(products?.last_page - 1)}}  className="bg-blue-700 text-slate-100 p-1 rounded-lg font-semibold hover:opacity-60">Last Page</button>
     </footer>
   )
 }
