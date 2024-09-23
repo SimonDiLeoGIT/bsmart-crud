@@ -56,7 +56,7 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
   return (
     <section>
       <Message message={message} visible={visible}  setVisible={setVisible}/>
-      <header className="flex justify-between items-center">
+      <header className="flex flex-col justify-between md:flex-row md:items-center">
         <h1 className="text-xl font-bold">Productos<span className="text-slate-500"> ({products?.total})</span></h1>
         <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-2">
           <fieldset className="flex items-center">
@@ -64,8 +64,8 @@ const Products:React.FC<Props> = ({refreshProducts}) => {
               <input type="number" className="p-2 w-12 border-b-4 text-center border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" value={productsPerPage} min={0} max={products?.total} onChange={handleItemsCountChange} />
             <button type="button" onClick={() => setProductsPerPage(productsPerPage+1)} className="bg-blue-700 text-slate-100 p-2 rounded-md font-semibold hover:opacity-70" >+</button>
           </fieldset>
-          <fieldset>
-            <input type="text" placeholder="Buscar..." className="p-2 border-b-4 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" onChange={(e) => setName(e.target.value)} />
+          <fieldset className="flex-1 md:flex-none">
+            <input type="text" placeholder="Buscar..." className="w-full p-2 border-b-4 border-slate-500 focus:border-blue-400 focus:outline-none bg-gray-300" onChange={(e) => setName(e.target.value)} />
           </fieldset>
         </form>
       </header>
