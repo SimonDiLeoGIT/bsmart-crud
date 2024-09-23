@@ -19,7 +19,7 @@ const CategoryDashboard: React.FC<Props> = ({ categories }) => {
   }
 
   return (
-    <section className="py-10">
+    <section className="py-4">
       <select name="category" onChange={handleSelectedChange} className="p-4 shadow-md shadow-slate-400 rounded-xl w-full mb-10 border">
         {
           categories.map(c => (
@@ -27,7 +27,7 @@ const CategoryDashboard: React.FC<Props> = ({ categories }) => {
           ))
         }
       </select>
-      <section className="grid grid-cols-2 gap-4">
+      <section className="grid xl:grid-cols-2 gap-4">
         <article className="shadow-md shadow-slate-400 rounded-xl relative border p-1">
           <h3 className="p-2 bg-teal-700 text-slate-100 inline rounded-lg absolute top-2 left-2 z-10">Stock por producto</h3>
           <Chart 

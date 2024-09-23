@@ -48,8 +48,8 @@ const Dashboard = () => {
       <h1 className="text-xl font-bold">Dashboard</h1>
       <section className="text-xl">
         <h2>Productos por Categoría</h2>
-        <section className="flex gap-4">
-          <article className="w-1/3 shadow-md shadow-slate-400 rounded-xl border">
+        <section className="flex flex-col lg:flex-row gap-4 my-4">
+          <article className="lg:flex-1 shadow-md shadow-slate-400 rounded-xl border">
             <Chart 
               options={{
                 chart: {
@@ -59,9 +59,10 @@ const Dashboard = () => {
               }}
               series={categories.map(c => c.products.length)}
               type="donut"
+              height={300}
             />
           </article>
-          <article className="flex-1 shadow-md shadow-slate-400 rounded-xl border p-1">
+          <article className="lg:w-1/2 xl:w-2/3 shadow-md shadow-slate-400 rounded-xl border p-1">
             <Chart 
               options={{
                 chart: {
@@ -76,7 +77,7 @@ const Dashboard = () => {
                 data: categories.map(c => c.products.length) 
               }]}
               type="bar"
-              height={500}
+              height={300}
             />
           </article>
         </section>
